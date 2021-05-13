@@ -28,9 +28,12 @@ public class Main
         public int run(String ...args)
                 throws IOException
         {
-            log.info("running import.sql and starting app...");
+            log.info("setting up database...");
             setupDatabase();
+
+            log.info("starting app...");
             Quarkus.waitForExit();
+
             return 0;
         }
 

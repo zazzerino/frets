@@ -16,8 +16,8 @@ public record User(Long id,
         this(nextId.getAndIncrement(), DEFAULT_NAME, sessionId, Optional.empty());
     }
 
-    public User withName(String name)
-    {
-        return new User(id, name, sessionId, gameId);
-    }
+//    public User withName(String name)
+//    {
+//        return new User(id, name, sessionId, gameId);
+//    }
 }
