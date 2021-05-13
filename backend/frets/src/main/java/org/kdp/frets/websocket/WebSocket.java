@@ -41,6 +41,7 @@ public class WebSocket
     {
         log.info("removing session: " + session.getId());
         sessions.remove(session.getId());
+        userController.sessionClosed(session.getId());
     }
 
     @OnError

@@ -32,13 +32,13 @@ public class UserDao
                 .withHandle(handle -> handle
                         .select("SELECT * FROM users WHERE session_id = ?", sessionId)
                         .mapTo(User.class)
-                        .stream().findFirst());
+                        .stream()
+                        .findFirst());
     }
 
     public void save(User user)
     {
         log.info("saving user: " + user);
-
         dbConn.getJdbi().useHandle(handle -> {
             handle.execute(
                     "INSERT INTO users (id, name, session_id, game_id) VALUES (?, ?, ?, ?)",
@@ -48,8 +48,17 @@ public class UserDao
 
     public void deleteById(Long id)
     {
+        log.info("deleting user with id " + id);
         dbConn.getJdbi().useHandle(handle -> {
             handle.execute("DELETE FROM users WHERE id = ?", id);
+        });
+    }
+
+    public void deleteBySessionId(String sessionId)
+    {
+        log.info("deleting user with sessionId " + sessionId);
+        dbConn.getJdbi().useHandle(handle -> {
+            handle.execute("DELETE FROM users where session_id = ?", sessionId);
         });
     }
 }

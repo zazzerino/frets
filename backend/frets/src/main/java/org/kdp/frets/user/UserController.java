@@ -36,5 +36,17 @@ public class UserController
 
     public void logout(String sessionId)
     {
+        executor.supplyAsync(() -> userDao
+                .getBySessionId(sessionId)
+                .orElseThrow()
+                .withName(User.DEFAULT_NAME))
+                .thenAcceptAsync(user -> {
+                    webSocket.sendToSession(sessionId, new LoginResponse(user));
+                });
+    }
+
+    public void sessionClosed(String sessionId)
+    {
+        executor.submit(() -> userDao.deleteBySessionId(sessionId));
     }
 }

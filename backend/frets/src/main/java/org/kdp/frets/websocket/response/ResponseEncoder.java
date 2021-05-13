@@ -2,7 +2,6 @@ package org.kdp.frets.websocket.response;
 
 import io.vertx.core.json.Json;
 
-import javax.websocket.EncodeException;
 import javax.websocket.Encoder;
 import javax.websocket.EndpointConfig;
 
