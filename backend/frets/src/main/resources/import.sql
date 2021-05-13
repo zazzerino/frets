@@ -7,4 +7,4 @@ CREATE TABLE users (
        game_id INT
 );
 
-INSERT INTO users (id, name) VALUES (42, 'Chuck the Truck');
+-- INSERT INTO users (id, name) VALUES (42, 'Barnabus');

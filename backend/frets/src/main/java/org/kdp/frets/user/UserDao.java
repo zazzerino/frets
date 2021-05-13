@@ -20,6 +20,10 @@ public class UserDao
     public void save(User user)
     {
         log.info("saving user: " + user);
-        log.info(dbConn.getJdbi());
+
+        dbConn.getJdbi().useHandle(handle -> {
+            handle.execute("INSERT INTO users (id, name, session_id, game_id) VALUES (?, ?, ?, ?)",
+                    user.id(), user.name(), user.sessionId(), user.gameId());
+        });
     }
 }
