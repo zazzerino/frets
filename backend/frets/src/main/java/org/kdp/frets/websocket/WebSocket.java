@@ -2,6 +2,9 @@ package org.kdp.frets.websocket;
 
 import org.jboss.logging.Logger;
 import org.kdp.frets.user.UserController;
+import org.kdp.frets.websocket.message.LoginMessage;
+import org.kdp.frets.websocket.message.Message;
+import org.kdp.frets.websocket.message.MessageDecoder;
 import org.kdp.frets.websocket.response.Response;
 import org.kdp.frets.websocket.response.ResponseEncoder;
 
@@ -15,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @ServerEndpoint(
         value = "/ws",
+        decoders = {MessageDecoder.class},
         encoders = {ResponseEncoder.class}
 )
 @ApplicationScoped
@@ -44,13 +48,25 @@ public class WebSocket
         userController.sessionClosed(session.getId());
     }
 
+    @OnMessage
+    public void onMessage(Session session, Message message)
+    {
+        log.info("message received: " + message);
+
+        if (message instanceof LoginMessage l) {
+            userController.login(session.getId(), l);
+        } else {
+            log.error("unrecognized message type: " + message);
+        }
+    }
+
     @OnError
     public void onError(Session session, Throwable throwable)
     {
         log.error("WEBSOCKET ERROR", throwable);
     }
 
-    public void sendToSession(Session session, Response response)
+    public void sendToSessionId(Session session, Response response)
     {
         session.getAsyncRemote()
                 .sendObject(response, result -> {
@@ -60,20 +76,20 @@ public class WebSocket
                 });
     }
 
-    public void sendToSession(String sessionId, Response response)
+    public void sendToSessionId(String sessionId, Response response)
     {
         final var session = sessions.get(sessionId);
-        sendToSession(session, response);
+        sendToSessionId(session, response);
     }
 
-    public void sendToSessions(Collection<String> sessionIds, Response response)
+    public void sendToSessionIds(Collection<String> sessionIds, Response response)
     {
-        sessionIds.forEach(id -> sendToSession(id, response));
+        sessionIds.forEach(id -> sendToSessionId(id, response));
     }
 
     public void broadcast(Response response)
     {
         sessions.values()
-                .forEach(s -> sendToSession(s, response));
+                .forEach(s -> sendToSessionId(s, response));
     }
 }

@@ -9,6 +9,7 @@ public record User(Long id,
                    Optional<Long> gameId)
 {
     public static final String DEFAULT_NAME = "anon";
+
     private static final AtomicLong nextId = new AtomicLong(0);
 
     public User(String sessionId)

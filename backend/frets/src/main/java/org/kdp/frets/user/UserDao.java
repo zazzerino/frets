@@ -11,9 +11,6 @@ import java.util.Optional;
 public class UserDao
 {
     @Inject
-    Logger log;
-
-    @Inject
     DatabaseConnection dbConn;
 
     public Optional<User> getById(Long userId)
@@ -36,9 +33,8 @@ public class UserDao
                         .findFirst());
     }
 
-    public void save(User user)
+    public void create(User user)
     {
-        log.info("saving user: " + user);
         dbConn.getJdbi().useHandle(handle -> {
             handle.execute(
                     "INSERT INTO users (id, name, session_id, game_id) VALUES (?, ?, ?, ?)",
@@ -48,7 +44,6 @@ public class UserDao
 
     public void deleteById(Long id)
     {
-        log.info("deleting user with id " + id);
         dbConn.getJdbi().useHandle(handle -> {
             handle.execute("DELETE FROM users WHERE id = ?", id);
         });
@@ -56,9 +51,15 @@ public class UserDao
 
     public void deleteBySessionId(String sessionId)
     {
-        log.info("deleting user with sessionId " + sessionId);
         dbConn.getJdbi().useHandle(handle -> {
-            handle.execute("DELETE FROM users where session_id = ?", sessionId);
+            handle.execute("DELETE FROM users WHERE session_id = ?", sessionId);
+        });
+    }
+
+    public void updateName(Long userId, String name)
+    {
+        dbConn.getJdbi().useHandle(handle -> {
+            handle.execute("UPDATE users SET name = ? WHERE id = ?", name, userId);
         });
     }
 }
