@@ -1,7 +1,9 @@
 package org.kdp.frets.websocket;
 
 import org.jboss.logging.Logger;
+import org.kdp.frets.game.GameController;
 import org.kdp.frets.user.UserController;
+import org.kdp.frets.websocket.message.CreateGameMessage;
 import org.kdp.frets.websocket.message.LoginMessage;
 import org.kdp.frets.websocket.message.Message;
 import org.kdp.frets.websocket.message.MessageDecoder;
@@ -32,6 +34,9 @@ public class WebSocket
     @Inject
     UserController userController;
 
+    @Inject
+    GameController gameController;
+
     @OnOpen
     public void onOpen(Session session)
     {
@@ -55,6 +60,8 @@ public class WebSocket
 
         if (message instanceof LoginMessage l) {
             userController.login(session.getId(), l);
+        } else if (message instanceof CreateGameMessage) {
+            gameController.createGame(session.getId());
         } else {
             log.error("unrecognized message type: " + message);
         }

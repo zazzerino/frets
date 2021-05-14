@@ -28,6 +28,7 @@ public class UserController
     {
         executor.supplyAsync(() -> {
             final var user = new User(sessionId);
+            log.info("saving user: " + user);
             userDao.create(user);
             return user;
         }).thenAcceptAsync(user -> {
@@ -42,11 +43,11 @@ public class UserController
             final var user = userDao
                     .getBySessionId(sessionId)
                     .orElseThrow()
-                    .withName(message.name);
+                    .withName(name);
+            log.info("user logged in: " + user);
             userDao.updateName(user.id(), name);
             return user;
         }).thenAcceptAsync(user -> {
-            log.info("hmm " + user);
             webSocket.sendToSessionId(sessionId, new LoginResponse(user));
         });
     }
@@ -64,6 +65,12 @@ public class UserController
 
     public void sessionClosed(String sessionId)
     {
-        executor.submit(() -> userDao.deleteBySessionId(sessionId));
+        executor.submit(() -> {
+            final var user = userDao.getBySessionId(sessionId);
+            if (user.isPresent()) {
+                log.info("deleting user: " + user.get());
+                userDao.deleteBySessionId(sessionId);
+            }
+        });
     }
 }

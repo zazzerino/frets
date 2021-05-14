@@ -1,12 +1,10 @@
 package org.kdp.frets.user;
 
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 public record User(Long id,
                    String name,
-                   String sessionId,
-                   Optional<Long> gameId)
+                   String sessionId)
 {
     public static final String DEFAULT_NAME = "anon";
 
@@ -14,11 +12,11 @@ public record User(Long id,
 
     public User(String sessionId)
     {
-        this(nextId.getAndIncrement(), DEFAULT_NAME, sessionId, Optional.empty());
+        this(nextId.getAndIncrement(), DEFAULT_NAME, sessionId);
     }
 
     public User withName(String name)
     {
-        return new User(id, name, sessionId, gameId);
+        return new User(id, name, sessionId);
     }
 }

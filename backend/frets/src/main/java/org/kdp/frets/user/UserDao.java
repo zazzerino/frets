@@ -1,6 +1,5 @@
 package org.kdp.frets.user;
 
-import org.jboss.logging.Logger;
 import org.kdp.frets.DatabaseConnection;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -37,8 +36,8 @@ public class UserDao
     {
         dbConn.getJdbi().useHandle(handle -> {
             handle.execute(
-                    "INSERT INTO users (id, name, session_id, game_id) VALUES (?, ?, ?, ?)",
-                    user.id(), user.name(), user.sessionId(), user.gameId());
+                    "INSERT INTO users (id, name, session_id) VALUES (?, ?, ?)",
+                    user.id(), user.name(), user.sessionId());
         });
     }
 

@@ -20,6 +20,9 @@ public class MessageDecoder implements Decoder.Text<Message>
                 final var name = json.getString("name");
                 return new LoginMessage(name);
             }
+            case CREATE_GAME -> {
+                return new CreateGameMessage();
+            }
             default -> throw new DecodeException(s, "error decoding json");
         }
     }
