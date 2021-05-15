@@ -42,6 +42,7 @@ public class WebSocket
         log.info("new session: " + session.getId());
         sessions.put(session.getId(), session);
         userController.loginAnonymousUser(session.getId());
+        gameController.sendGamesToSessionId(session.getId());
     }
 
     @OnClose

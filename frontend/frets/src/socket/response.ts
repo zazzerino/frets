@@ -1,6 +1,6 @@
 import type { User } from '../user';
 import { user, game, games } from '../stores';
-import type { Game, Summary } from '../game';
+import type { Game } from '../game';
 
 export type ResponseType =
   'LOGIN'
@@ -31,7 +31,7 @@ export function handleCreateGame(response: CreateGameResponse) {
 
 export interface GamesResponse extends Response {
   type: 'GAMES';
-  games: Summary[];
+  games: Game[];
 }
 
 export function handleGames(response: GamesResponse) {

@@ -30,9 +30,9 @@ function onMessage(event: MessageEvent) {
   console.log(response);
 
   switch (response.type) {
-    case 'LOGIN': handleLogin(response as LoginResponse);
-    case 'CREATE_GAME': handleCreateGame(response as CreateGameResponse);
-    case 'GAMES': handleGames(response as GamesResponse);
+    case 'LOGIN': return handleLogin(response as LoginResponse);
+    case 'CREATE_GAME': return handleCreateGame(response as CreateGameResponse);
+    case 'GAMES': return handleGames(response as GamesResponse);
   }
 }
 

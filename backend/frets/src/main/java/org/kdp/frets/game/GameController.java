@@ -2,7 +2,6 @@ package org.kdp.frets.game;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.jboss.logging.Logger;
-import org.kdp.frets.user.User;
 import org.kdp.frets.user.UserDao;
 import org.kdp.frets.websocket.WebSocket;
 import org.kdp.frets.websocket.response.responses.GamesResponse;
@@ -34,6 +33,15 @@ public class GameController
             log.info("broadcasting games...");
             final var games = gameDao.getAll();
             webSocket.broadcast(new GamesResponse(games));
+        });
+    }
+
+    public void sendGamesToSessionId(String sessionId)
+    {
+        executor.submit(() -> {
+            log.info("sending games to session: " + sessionId);
+            final var games = gameDao.getAll();
+            webSocket.sendToSessionId(sessionId, new GamesResponse(games));
         });
     }
 
