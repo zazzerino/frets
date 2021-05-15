@@ -40,7 +40,7 @@ public class GameController
     {
         executor.submit(() -> {
             try {
-//                final var user = userDao.getBySessionId(sessionId).orElseThrow();
+                final var user = userDao.getBySessionId(sessionId).orElseThrow();
                 final var game = new Game();
                 log.info("creating game: " + game);
                 gameDao.create(game);

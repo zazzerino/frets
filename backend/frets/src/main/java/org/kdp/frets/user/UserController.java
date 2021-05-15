@@ -49,11 +49,11 @@ public class UserController
     public void sessionClosed(String sessionId)
     {
         executor.submit(() -> {
-            final var user = userDao.getBySessionId(sessionId);
-            if (user.isPresent()) {
-                log.info("deleting user: " + user.get());
-                userDao.deleteBySessionId(sessionId);
-            }
+            userDao.getBySessionId(sessionId)
+                    .ifPresent(user -> {
+                        log.info("deleting user: " + user);
+                        userDao.deleteBySessionId(sessionId);
+                    });
         });
     }
 }

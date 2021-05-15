@@ -2,6 +2,7 @@ package org.kdp.frets.game;
 
 import org.kdp.frets.DatabaseConnection;
 import org.kdp.frets.theory.Accidental;
+import org.kdp.frets.user.User;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -49,6 +50,16 @@ public class GameDao
                                     .map(Accidental::toString)
                                     .toArray())
                     .execute();
+        });
+    }
+
+    public void addPlayerToGame(Game game, User user)
+    {
+        dbConn.getJdbi().useHandle(handle -> {
+            handle.execute("""
+                    INSERT INTO game_users (game_id, user_id)
+                    VALUES (?, ?)""",
+                    game.id, user.id);
         });
     }
 }
