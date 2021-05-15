@@ -1,13 +1,9 @@
 package org.kdp.frets.game;
 
-import org.kdp.frets.Accidental;
-import org.kdp.frets.user.User;
+import org.kdp.frets.theory.Accidental;
 
-import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Game
@@ -17,9 +13,9 @@ public class Game
 
     private State state = State.INIT;
     private int roundCount = DEFAULT_ROUND_COUNT;
-    private final List<User> players = new ArrayList<>();
-    private final Set<Integer> stringsToUse = Set.of(1, 2, 3, 4, 5, 6);;
-    private final Set<Accidental> accidentalsToUse = Set.of(Accidental.FLAT, Accidental.NONE, Accidental.SHARP);;
+
+    private List<Integer> stringsToUse = List.of(1, 2, 3, 4, 5, 6);
+    private List<Accidental> accidentalsToUse = List.of(Accidental.FLAT, Accidental.NONE, Accidental.SHARP);
 
     private final static AtomicLong nextId = new AtomicLong(0);
     private final static int DEFAULT_ROUND_COUNT = 4;
@@ -38,17 +34,10 @@ public class Game
         createdAt = Instant.now();
     }
 
-    public Game(Long id, Instant createdAt, State state, int roundCount)
+    public Game(Long id, Instant createdAt)
     {
         this.id = id;
         this.createdAt = createdAt;
-        this.state = state;
-        this.roundCount = roundCount;
-    }
-
-    public List<User> getPlayers()
-    {
-        return players;
     }
 
     public int getRoundCount()
@@ -61,14 +50,24 @@ public class Game
         this.roundCount = roundCount;
     }
 
-    public Set<Integer> getStringsToUse()
+    public List<Integer> getStringsToUse()
     {
         return stringsToUse;
     }
 
-    public Set<Accidental> getAccidentalsToUse()
+    public void setStringsToUse(List<Integer> stringsToUse)
+    {
+        this.stringsToUse = stringsToUse;
+    }
+
+    public List<Accidental> getAccidentalsToUse()
     {
         return accidentalsToUse;
+    }
+
+    public void setAccidentalsToUse(List<Accidental> accidentalsToUse)
+    {
+        this.accidentalsToUse = accidentalsToUse;
     }
 
     public State getState()
@@ -89,7 +88,6 @@ public class Game
                 ", createdAt=" + createdAt +
                 ", state=" + state +
                 ", roundCount=" + roundCount +
-                ", players=" + players +
                 ", stringsToUse=" + stringsToUse +
                 ", accidentalsToUse=" + accidentalsToUse +
                 '}';

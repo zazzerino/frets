@@ -4,7 +4,8 @@ import org.kdp.frets.DatabaseConnection;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.sql.Timestamp;
+import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class GameDao
@@ -12,17 +13,36 @@ public class GameDao
     @Inject
     DatabaseConnection dbConn;
 
+    public Optional<Game> getById(Long gameId)
+    {
+        return dbConn.getJdbi()
+                .withHandle(handle -> handle
+                        .select("SELECT * FROM games WHERE id = ?", gameId)
+                        .mapTo(Game.class)
+                        .findFirst());
+    }
+
+    public List<Game> getAll()
+    {
+        return dbConn.getJdbi()
+                .withHandle(handle -> handle
+                        .select("SELECT * FROM games")
+                        .mapTo(Game.class)
+                        .list());
+    }
+
     public void create(Game game)
     {
         dbConn.getJdbi().useHandle(handle -> {
-            handle.execute(
-                    "INSERT INTO games (id, created_at, state, round_count) VALUES (?, ?, ?, ?)",
-                    game.id, Timestamp.from(game.createdAt), game.getState(), game.getRoundCount());
+            handle.createUpdate("""
+                    INSERT INTO games (id, created_at, state, round_count, strings_to_use)
+                    VALUES (:id, :created_at, :state, :round_count, :strings_to_use)""")
+                    .bind("id", game.id)
+                    .bind("created_at", game.createdAt)
+                    .bind("state", game.getState())
+                    .bind("round_count", game.getRoundCount())
+                    .bindArray("strings_to_use", Integer.class, game.getStringsToUse())
+                    .execute();
         });
-    }
-
-    public void getById(Long id)
-    {
-//        dbConn.getJdbi().
     }
 }

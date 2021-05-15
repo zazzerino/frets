@@ -1,4 +1,6 @@
-package org.kdp.frets.websocket.message;
+package org.kdp.frets.websocket.message.messages;
+
+import org.kdp.frets.websocket.message.Message;
 
 public class LoginMessage extends Message
 {

@@ -3,8 +3,8 @@ package org.kdp.frets.user;
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.jboss.logging.Logger;
 import org.kdp.frets.websocket.WebSocket;
-import org.kdp.frets.websocket.message.LoginMessage;
-import org.kdp.frets.websocket.response.LoginResponse;
+import org.kdp.frets.websocket.message.messages.LoginMessage;
+import org.kdp.frets.websocket.response.responses.LoginResponse;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -40,12 +40,10 @@ public class UserController
     {
         executor.supplyAsync(() -> {
             final var name = message.name;
-            final var user = userDao
-                    .getBySessionId(sessionId)
-                    .orElseThrow()
-                    .withName(name);
+            final var user = userDao.getBySessionId(sessionId).orElseThrow();
+            user.setName(name);
             log.info("user logged in: " + user);
-            userDao.updateName(user.id(), name);
+            userDao.updateName(user.id, name);
             return user;
         }).thenAcceptAsync(user -> {
             webSocket.sendToSessionId(sessionId, new LoginResponse(user));

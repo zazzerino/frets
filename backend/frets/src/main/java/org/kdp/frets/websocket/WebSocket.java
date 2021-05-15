@@ -3,10 +3,9 @@ package org.kdp.frets.websocket;
 import org.jboss.logging.Logger;
 import org.kdp.frets.game.GameController;
 import org.kdp.frets.user.UserController;
-import org.kdp.frets.websocket.message.CreateGameMessage;
-import org.kdp.frets.websocket.message.LoginMessage;
-import org.kdp.frets.websocket.message.Message;
-import org.kdp.frets.websocket.message.MessageDecoder;
+import org.kdp.frets.websocket.message.*;
+import org.kdp.frets.websocket.message.messages.CreateGameMessage;
+import org.kdp.frets.websocket.message.messages.LoginMessage;
 import org.kdp.frets.websocket.response.Response;
 import org.kdp.frets.websocket.response.ResponseEncoder;
 

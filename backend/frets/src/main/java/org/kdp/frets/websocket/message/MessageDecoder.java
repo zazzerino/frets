@@ -1,6 +1,8 @@
 package org.kdp.frets.websocket.message;
 
 import io.vertx.core.json.JsonObject;
+import org.kdp.frets.websocket.message.messages.CreateGameMessage;
+import org.kdp.frets.websocket.message.messages.LoginMessage;
 
 import javax.websocket.DecodeException;
 import javax.websocket.Decoder;

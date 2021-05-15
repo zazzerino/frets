@@ -18,7 +18,6 @@ public class UserDao
                 .withHandle(handle -> handle
                         .select("SELECT * FROM users WHERE id = ?", userId)
                         .mapTo(User.class)
-                        .stream()
                         .findFirst());
     }
 
@@ -28,7 +27,6 @@ public class UserDao
                 .withHandle(handle -> handle
                         .select("SELECT * FROM users WHERE session_id = ?", sessionId)
                         .mapTo(User.class)
-                        .stream()
                         .findFirst());
     }
 
@@ -36,8 +34,12 @@ public class UserDao
     {
         dbConn.getJdbi().useHandle(handle -> {
             handle.execute(
-                    "INSERT INTO users (id, name, session_id) VALUES (?, ?, ?)",
-                    user.id(), user.name(), user.sessionId());
+                    """
+                    INSERT INTO users (id, name, session_id)
+                    VALUES (?, ?, ?)""",
+                    user.id,
+                    user.getName(),
+                    user.sessionId);
         });
     }
 

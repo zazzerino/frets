@@ -1,4 +1,4 @@
-package org.kdp.frets;
+package org.kdp.frets.theory;
 
 public enum Accidental
 {
