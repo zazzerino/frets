@@ -1,4 +1,14 @@
 <script lang="ts">
+  import { page } from './stores';
+  import Navbar from './Navbar.svelte';
+</script>
+
+<main class="m-4 text-center">
+  <Navbar/>
+  <svelte:component this={$page}/>
+</main>
+
+<!-- <script lang="ts">
   import logo from './assets/svelte.png'
   import Counter from './lib/Counter.svelte'
 </script>
@@ -62,4 +72,4 @@
       @apply max-w-none;
     }
   }
-</style>
+</style> -->
