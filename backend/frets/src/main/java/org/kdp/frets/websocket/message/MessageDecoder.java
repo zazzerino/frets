@@ -2,6 +2,7 @@ package org.kdp.frets.websocket.message;
 
 import io.vertx.core.json.JsonObject;
 import org.kdp.frets.websocket.message.messages.CreateGameMessage;
+import org.kdp.frets.websocket.message.messages.JoinGameMessage;
 import org.kdp.frets.websocket.message.messages.LoginMessage;
 
 import javax.websocket.DecodeException;
@@ -24,6 +25,11 @@ public class MessageDecoder implements Decoder.Text<Message>
             }
             case CREATE_GAME -> {
                 return new CreateGameMessage();
+            }
+            case JOIN_GAME -> {
+                final var gameId = json.getLong("gameId");
+                final var userId = json.getLong("userId");
+                return new JoinGameMessage(gameId, userId);
             }
             default -> throw new DecodeException(s, "error decoding json");
         }

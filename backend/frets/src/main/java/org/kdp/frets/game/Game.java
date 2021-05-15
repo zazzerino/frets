@@ -43,15 +43,15 @@ public class Game
         this.createdAt = createdAt;
     }
 
-    public Game addPlayer(User user)
+    public Game addPlayerId(Long playerId)
     {
-        playerIds.add(user.id);
+        playerIds.add(playerId);
         return this;
     }
 
-    public Game removePlayer(User user)
+    public Game removePlayerId(long playerId)
     {
-        playerIds.remove(user.id);
+        playerIds.remove(playerId);
         return this;
     }
 
@@ -112,10 +112,10 @@ public class Game
                 "id=" + id +
                 ", createdAt=" + createdAt +
                 ", state=" + state +
+                ", playerIds=" + playerIds +
                 ", roundCount=" + roundCount +
                 ", stringsToUse=" + stringsToUse +
                 ", accidentalsToUse=" + accidentalsToUse +
-                ", playerIds=" + playerIds +
                 '}';
     }
 }

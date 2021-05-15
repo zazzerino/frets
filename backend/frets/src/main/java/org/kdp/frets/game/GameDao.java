@@ -2,17 +2,24 @@ package org.kdp.frets.game;
 
 import org.kdp.frets.DatabaseConnection;
 import org.kdp.frets.theory.Accidental;
+import org.kdp.frets.user.User;
+import org.kdp.frets.user.UserDao;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @ApplicationScoped
 public class GameDao
 {
     @Inject
     DatabaseConnection dbConn;
+
+    @Inject
+    UserDao userDao;
 
     public Optional<Game> getById(Long gameId)
     {
@@ -65,4 +72,24 @@ public class GameDao
                     .execute();
         });
     }
+
+    public List<String> getSessionIds(Game game)
+    {
+        return dbConn.getJdbi()
+                .withHandle(handle -> handle
+                        .select("SELECT session_id FROM USERS WHERE id in (<player_ids>)")
+                        .bindList("player_ids", game.getPlayerIds())
+                        .mapTo(String.class)
+                        .list());
+    }
+
+//    public Set<User> getPlayers(Game game)
+//    {
+//        final Set<User> users = new HashSet<>();
+//        for (final var playerId : game.getPlayerIds()) {
+//            final var user = userDao.getById(playerId);
+//            user.ifPresent(users::add);
+//        }
+//        return users;
+//    }
 }

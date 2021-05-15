@@ -2,7 +2,8 @@ import { sendMessage } from './socket';
 
 export type MessageType =
   'LOGIN'
-  | 'CREATE_GAME';
+  | 'CREATE_GAME'
+  | 'JOIN_GAME';
 
 export interface Message {
   type: MessageType
@@ -36,4 +37,22 @@ function createGameMessage(): CreateGameMessage {
 
 export function sendCreateGame() {
   sendMessage(createGameMessage());
+}
+
+interface JoinGameMessage extends Message {
+  type: 'JOIN_GAME';
+  gameId: number;
+  userId: number;
+}
+
+function joinGameMessage(gameId: number, userId: number): JoinGameMessage {
+  return {
+    type: 'JOIN_GAME',
+    gameId,
+    userId
+  }
+}
+
+export function sendJoinGame(gameId: number, userId: number) {
+  sendMessage(joinGameMessage(gameId, userId));
 }

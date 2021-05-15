@@ -78,6 +78,7 @@ public class DatabaseConnection
         }
 
         final var game = new Game(id, createdAt);
+
         game.setState(state);
         game.setRoundCount(roundCount);
         game.setStringsToUse(stringsToUse);

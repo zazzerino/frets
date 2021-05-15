@@ -1,6 +1,6 @@
 <script lang="ts">
-  import CreateGameButton from './CreateGameButton.svelte';
-  import GamesTable from './GamesTable.svelte';
+  import CreateGameButton from './game/components/CreateGameButton.svelte';
+  import GamesTable from './game/components/GamesTable.svelte';
 </script>
 
 <h2>Home</h2>

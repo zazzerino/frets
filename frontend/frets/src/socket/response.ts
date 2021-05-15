@@ -1,6 +1,6 @@
 import type { User } from '../user';
 import { user, game, games } from '../stores';
-import type { Game } from '../game';
+import type { Game } from '../game/game';
 
 export type ResponseType =
   'LOGIN'
