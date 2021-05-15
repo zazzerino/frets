@@ -41,7 +41,7 @@ public class GameDao
                     .bind("created_at", game.createdAt)
                     .bind("state", game.getState())
                     .bind("round_count", game.getRoundCount())
-                    .bindArray("strings_to_use", Integer.class, game.getStringsToUse())
+                    .bindArray("strings_to_use", Integer.class, game.getStringsToUse().toArray())
                     .execute();
         });
     }

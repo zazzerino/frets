@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class DatabaseConnection
@@ -53,10 +54,12 @@ public class DatabaseConnection
         try {
             final var id = rs.getLong("id");
             final var createdAt = rs.getTimestamp("created_at").toInstant();
+
             final var state = Game.State.valueOf(rs.getString("state"));
             final var roundCount = rs.getInt("round_count");
+
             final var stringArray = (Integer[]) rs.getArray("strings_to_use").getArray();
-            final var stringsToUse = Arrays.stream(stringArray).toList();
+            final var stringsToUse = Arrays.stream(stringArray).collect(Collectors.toSet());
 
             final var game = new Game(id, createdAt);
             game.setState(state);

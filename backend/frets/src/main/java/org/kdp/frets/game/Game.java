@@ -4,6 +4,7 @@ import org.kdp.frets.theory.Accidental;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Game
@@ -14,7 +15,7 @@ public class Game
     private State state = State.INIT;
     private int roundCount = DEFAULT_ROUND_COUNT;
 
-    private List<Integer> stringsToUse = List.of(1, 2, 3, 4, 5, 6);
+    private Set<Integer> stringsToUse = Set.of(1, 2, 3, 4, 5, 6);
     private List<Accidental> accidentalsToUse = List.of(Accidental.FLAT, Accidental.NONE, Accidental.SHARP);
 
     private final static AtomicLong nextId = new AtomicLong(0);
@@ -50,12 +51,12 @@ public class Game
         this.roundCount = roundCount;
     }
 
-    public List<Integer> getStringsToUse()
+    public Set<Integer> getStringsToUse()
     {
         return stringsToUse;
     }
 
-    public void setStringsToUse(List<Integer> stringsToUse)
+    public void setStringsToUse(Set<Integer> stringsToUse)
     {
         this.stringsToUse = stringsToUse;
     }
