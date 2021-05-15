@@ -6,6 +6,9 @@
     <li>
       <a href="/login">Login</a>
     </li>
+    <li>
+      <a href="/game">Game</a>
+    </li>
   </ul>
 </nav>
 

@@ -62,7 +62,6 @@ public class UserController
                     .ifPresent(user -> {
                         log.info("deleting user: " + user);
                         userDao.deleteBySessionId(sessionId);
-
                         gameDao.getUserGame(user.id)
                                 .ifPresent(game -> {
                                     game.removePlayerId(user.id);
