@@ -3,7 +3,6 @@ package org.kdp.frets.game;
 import org.kdp.frets.theory.Accidental;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -13,8 +12,9 @@ public class Game
     public final Instant createdAt;
 
     private State state = State.INIT;
-    private int roundCount = DEFAULT_ROUND_COUNT;
+    private Set<Long> playerIds = Set.of();
 
+    private int roundCount = DEFAULT_ROUND_COUNT;
     private Set<Integer> stringsToUse = Set.of(1, 2, 3, 4, 5, 6);
     private Set<Accidental> accidentalsToUse = Set.of(Accidental.FLAT, Accidental.NONE, Accidental.SHARP);
 
@@ -79,6 +79,16 @@ public class Game
     public void setState(State state)
     {
         this.state = state;
+    }
+
+    public Set<Long> getPlayerIds()
+    {
+        return playerIds;
+    }
+
+    public void setPlayerIds(Set<Long> playerIds)
+    {
+        this.playerIds = playerIds;
     }
 
     @Override

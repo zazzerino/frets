@@ -26,40 +26,25 @@ public class UserController
 
     public void loginAnonymousUser(String sessionId)
     {
-        executor.supplyAsync(() -> {
+        executor.submit(() -> {
             final var user = new User(sessionId);
             log.info("saving user: " + user);
             userDao.create(user);
-            return user;
-        }).thenAcceptAsync(user -> {
             webSocket.sendToSessionId(sessionId, new LoginResponse(user));
         });
     }
 
     public void login(String sessionId, LoginMessage message)
     {
-        executor.supplyAsync(() -> {
+        executor.submit(() -> {
             final var name = message.name;
             final var user = userDao.getBySessionId(sessionId).orElseThrow();
             user.setName(name);
             log.info("user logged in: " + user);
             userDao.updateName(user.id, name);
-            return user;
-        }).thenAcceptAsync(user -> {
             webSocket.sendToSessionId(sessionId, new LoginResponse(user));
         });
     }
-
-//    public void logout(String sessionId)
-//    {
-//        executor.supplyAsync(() -> userDao
-//                .getBySessionId(sessionId)
-//                .orElseThrow()
-//                .withName(User.DEFAULT_NAME))
-//                .thenAcceptAsync(user -> {
-//                    webSocket.sendToSession(sessionId, new LoginResponse(user));
-//                });
-//    }
 
     public void sessionClosed(String sessionId)
     {
