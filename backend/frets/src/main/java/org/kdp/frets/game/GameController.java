@@ -33,7 +33,7 @@ public class GameController
     {
         executor.submit(() -> {
             log.info("broadcasting games...");
-            final var games = gameDao.getAll();
+            final var games = gameDao.getAllByNewest();
             webSocket.broadcast(new GamesResponse(games));
         });
     }
@@ -42,7 +42,7 @@ public class GameController
     {
         executor.submit(() -> {
             log.info("sending games to session: " + sessionId);
-            final var games = gameDao.getAll();
+            final var games = gameDao.getAllByNewest();
             webSocket.sendToSessionId(sessionId, new GamesResponse(games));
         });
     }
@@ -65,6 +65,7 @@ public class GameController
             log.info("creating game: " + game);
             gameDao.create(game);
             broadcastGames();
+            webSocket.sendToSessionId(sessionId, new JoinGameResponse(game));
         });
     }
 

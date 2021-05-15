@@ -1,6 +1,6 @@
 import type { Message } from './message';
 import { 
-  handleLogin, Response, LoginResponse, handleCreateGame, CreateGameResponse, handleGames, GamesResponse
+  handleLogin, Response, LoginResponse, handleCreateGame, CreateGameResponse, handleGames, GamesResponse, handleJoinGame, JoinGameResponse
 } from './response';
 
 export function sendMessage(message: Message) {
@@ -33,6 +33,7 @@ function onMessage(event: MessageEvent) {
     case 'LOGIN': return handleLogin(response as LoginResponse);
     case 'CREATE_GAME': return handleCreateGame(response as CreateGameResponse);
     case 'GAMES': return handleGames(response as GamesResponse);
+    case 'JOIN_GAME': return handleJoinGame(response as JoinGameResponse);
   }
 }
 

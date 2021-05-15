@@ -2,6 +2,7 @@ package org.kdp.frets.user;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.jboss.logging.Logger;
+import org.kdp.frets.game.GameDao;
 import org.kdp.frets.websocket.WebSocket;
 import org.kdp.frets.websocket.message.messages.LoginMessage;
 import org.kdp.frets.websocket.response.responses.LoginResponse;
@@ -23,6 +24,9 @@ public class UserController
 
     @Inject
     UserDao userDao;
+
+    @Inject
+    GameDao gameDao;
 
     public void loginAnonymousUser(String sessionId)
     {
@@ -53,6 +57,12 @@ public class UserController
                     .ifPresent(user -> {
                         log.info("deleting user: " + user);
                         userDao.deleteBySessionId(sessionId);
+
+                        gameDao.getUserGame(user.id)
+                                .ifPresent(game -> {
+                                    game.removePlayerId(user.id);
+                                    gameDao.updatePlayerIds(game);
+                                });
                     });
         });
     }

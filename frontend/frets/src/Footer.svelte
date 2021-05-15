@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { user, game, games } from './stores';
+  import { user, game } from './stores';
 </script>
 
 <div class="Footer">

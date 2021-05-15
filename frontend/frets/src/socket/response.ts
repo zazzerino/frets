@@ -5,7 +5,8 @@ import type { Game } from '../game/game';
 export type ResponseType =
   'LOGIN'
   | 'CREATE_GAME'
-  | 'GAMES';
+  | 'GAMES'
+  | 'JOIN_GAME';
 
 export interface Response {
   type: ResponseType;
@@ -36,4 +37,13 @@ export interface GamesResponse extends Response {
 
 export function handleGames(response: GamesResponse) {
   games.set(response.games);
+}
+
+export interface JoinGameResponse extends Response {
+  type: 'JOIN_GAME';
+  game: Game;
+}
+
+export function handleJoinGame(response: JoinGameResponse) {
+  game.set(response.game);
 }

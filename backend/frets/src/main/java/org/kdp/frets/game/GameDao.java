@@ -7,10 +7,8 @@ import org.kdp.frets.user.UserDao;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @ApplicationScoped
 public class GameDao
@@ -35,6 +33,15 @@ public class GameDao
         return dbConn.getJdbi()
                 .withHandle(handle -> handle
                         .select("SELECT * FROM games")
+                        .mapTo(Game.class)
+                        .list());
+    }
+
+    public List<Game> getAllByNewest()
+    {
+        return dbConn.getJdbi()
+                .withHandle(handle -> handle
+                        .select("SELECT * FROM games ORDER BY created_at DESC")
                         .mapTo(Game.class)
                         .list());
     }
@@ -66,8 +73,12 @@ public class GameDao
     public void updatePlayerIds(Game game)
     {
         dbConn.getJdbi().useHandle(handle -> {
-            handle.createUpdate("UPDATE games SET player_ids = :player_ids WHERE id = :id")
+            handle.createUpdate("""
+                    UPDATE games
+                    SET player_ids = :player_ids, state = :state
+                    WHERE id = :id""")
                     .bind("id", game.id)
+                    .bind("state", game.getState())
                     .bindArray("player_ids", Long.class, game.getPlayerIds().toArray())
                     .execute();
         });
@@ -91,5 +102,15 @@ public class GameDao
                         .bindList("player_ids", game.getPlayerIds())
                         .mapTo(User.class)
                         .list());
+    }
+
+    public Optional<Game> getUserGame(Long userId)
+    {
+        return dbConn.getJdbi()
+                .withHandle(handle -> handle
+                        .select("SELECT * FROM games WHERE :user_id = ANY(player_ids)")
+                        .bind("user_id", userId)
+                        .mapTo(Game.class)
+                        .findFirst());
     }
 }

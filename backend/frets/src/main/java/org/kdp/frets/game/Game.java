@@ -43,16 +43,18 @@ public class Game
         this.createdAt = createdAt;
     }
 
-    public Game addPlayerId(Long playerId)
+    public void addPlayerId(Long playerId)
     {
         playerIds.add(playerId);
-        return this;
     }
 
-    public Game removePlayerId(long playerId)
+    public void removePlayerId(long playerId)
     {
         playerIds.remove(playerId);
-        return this;
+
+        if (playerIds.isEmpty()) {
+            state = State.GAME_OVER;
+        }
     }
 
     public int getRoundCount()
