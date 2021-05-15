@@ -1,21 +1,8 @@
-import router from 'page';
-import App from './App.svelte';
-import Home from './Home.svelte';
-import Login from './Login.svelte';
-import GamePage from './game/GamePage.svelte';
-import { page } from './stores';
-
-function setupRoutes() {
-	router('/', () => page.set(Home));
-	router('/login', () => page.set(Login));
-	router('/game', () => page.set(GamePage));
-	router.start();
-}
+import "./global.postcss"
+import App from './App.svelte'
 
 const app = new App({
-	target: document.body
-});
+  target: document.getElementById('app')
+})
 
-setupRoutes();
-
-export default app;
+export default app
