@@ -2,6 +2,7 @@ package org.kdp.frets.game;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.jboss.logging.Logger;
+import org.kdp.frets.user.User;
 import org.kdp.frets.user.UserDao;
 import org.kdp.frets.websocket.WebSocket;
 import org.kdp.frets.websocket.response.responses.GamesResponse;
@@ -44,10 +45,15 @@ public class GameController
                 final var game = new Game();
                 log.info("creating game: " + game);
                 gameDao.create(game);
-                broadcastGames();
+//                broadcastGames();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void addUserToGame(Game game, User user)
+    {
+
     }
 }

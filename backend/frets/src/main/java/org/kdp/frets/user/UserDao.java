@@ -57,10 +57,10 @@ public class UserDao
         });
     }
 
-    public void updateName(Long userId, String name)
+    public void updateName(User user)
     {
         dbConn.getJdbi().useHandle(handle -> {
-            handle.execute("UPDATE users SET name = ? WHERE id = ?", name, userId);
+            handle.execute("UPDATE users SET name = ? WHERE id = ?", user.getName(), user.id);
         });
     }
 }

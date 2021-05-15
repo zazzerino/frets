@@ -41,7 +41,7 @@ public class UserController
             final var user = userDao.getBySessionId(sessionId).orElseThrow();
             user.setName(name);
             log.info("user logged in: " + user);
-            userDao.updateName(user.id, name);
+            userDao.updateName(user);
             webSocket.sendToSessionId(sessionId, new LoginResponse(user));
         });
     }

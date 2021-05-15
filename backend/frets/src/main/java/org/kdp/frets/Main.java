@@ -40,10 +40,10 @@ public class Main
         private void setupDatabase()
                 throws IOException
         {
-            final var sql = Util.getResourceFileAsString("import.sql");
+            final var importSql = Util.getResourceFileAsString("import.sql");
 
             dbConn.getJdbi().useHandle(handle -> {
-                handle.execute(sql);
+                handle.execute(importSql);
             });
         }
     }
