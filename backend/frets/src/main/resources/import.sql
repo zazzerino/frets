@@ -6,18 +6,23 @@ CREATE TABLE users (
        session_id text UNIQUE NOT NULL
 );
 
-DROP TYPE IF EXISTS game_state;
+DROP TYPE IF EXISTS game_state CASCADE;
 
 CREATE TYPE game_state AS ENUM ('INIT', 'PLAYING', 'ROUND_OVER', 'GAME_OVER');
+
+-- DROP TYPE IF EXISTS accidental CASCADE;
+
+-- CREATE TYPE accidental as ENUM ('DOUBLE_FLAT', 'FLAT', 'NONE', 'SHARP', 'DOUBLE_SHARP');
 
 DROP TABLE IF EXISTS games CASCADE;
 
 CREATE TABLE games (
        id integer PRIMARY KEY,
        created_at timestamp NOT NULL,
-       state text NOT NULL,
+       state game_state NOT NULL,
        round_count integer NOT NULL,
-       strings_to_use integer[] NOT NULL
+       strings_to_use integer[] NOT NULL,
+       accidentals_to_use text[] NOT NULL
 );
 
 DROP TABLE IF EXISTS game_users;

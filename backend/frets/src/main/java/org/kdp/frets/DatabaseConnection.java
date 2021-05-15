@@ -5,6 +5,7 @@ import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.postgres.PostgresPlugin;
 import org.kdp.frets.game.Game;
+import org.kdp.frets.theory.Accidental;
 import org.kdp.frets.user.User;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -58,13 +59,19 @@ public class DatabaseConnection
             final var state = Game.State.valueOf(rs.getString("state"));
             final var roundCount = rs.getInt("round_count");
 
-            final var stringArray = (Integer[]) rs.getArray("strings_to_use").getArray();
-            final var stringsToUse = Arrays.stream(stringArray).collect(Collectors.toSet());
+            final var stringsArray = (Integer[]) rs.getArray("strings_to_use").getArray();
+            final var stringsToUse = Arrays.stream(stringsArray).collect(Collectors.toSet());
+
+            final var accidentalsArray = (String[]) rs.getArray("accidentals_to_use").getArray();
+            final Set<Accidental> accidentalsToUse = Arrays.stream(accidentalsArray)
+                    .map(Accidental::valueOf)
+                    .collect(Collectors.toSet());
 
             final var game = new Game(id, createdAt);
             game.setState(state);
             game.setRoundCount(roundCount);
             game.setStringsToUse(stringsToUse);
+            game.setAccidentalsToUse(accidentalsToUse);
 
             return game;
         } catch (Exception e) {

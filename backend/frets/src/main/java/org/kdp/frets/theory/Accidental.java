@@ -2,32 +2,12 @@ package org.kdp.frets.theory;
 
 public enum Accidental
 {
-    DOUBLE_FLAT("bb"),
-    FLAT("b"),
-    NONE(""),
-    NATURAL("n"),
-    SHARP("#"),
-    DOUBLE_SHARP("##");
-
-    public final String val;
-
-    Accidental(String val)
-    {
-        this.val = val;
-    }
-
-    public static Accidental from(String val)
-    {
-        return switch (val.toLowerCase()) {
-            case "bb" -> DOUBLE_FLAT;
-            case "b" -> FLAT;
-            case "" -> NONE;
-            case "n" -> NATURAL;
-            case "#" -> SHARP;
-            case "##" -> DOUBLE_SHARP;
-            default -> throw new IllegalStateException("Unexpected value: " + val);
-        };
-    }
+    DOUBLE_FLAT,
+    FLAT,
+    NONE,
+    NATURAL,
+    SHARP,
+    DOUBLE_SHARP;
 
     public int halfStepOffset()
     {

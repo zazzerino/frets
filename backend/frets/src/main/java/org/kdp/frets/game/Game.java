@@ -16,7 +16,7 @@ public class Game
     private int roundCount = DEFAULT_ROUND_COUNT;
 
     private Set<Integer> stringsToUse = Set.of(1, 2, 3, 4, 5, 6);
-    private List<Accidental> accidentalsToUse = List.of(Accidental.FLAT, Accidental.NONE, Accidental.SHARP);
+    private Set<Accidental> accidentalsToUse = Set.of(Accidental.FLAT, Accidental.NONE, Accidental.SHARP);
 
     private final static AtomicLong nextId = new AtomicLong(0);
     private final static int DEFAULT_ROUND_COUNT = 4;
@@ -61,12 +61,12 @@ public class Game
         this.stringsToUse = stringsToUse;
     }
 
-    public List<Accidental> getAccidentalsToUse()
+    public Set<Accidental> getAccidentalsToUse()
     {
         return accidentalsToUse;
     }
 
-    public void setAccidentalsToUse(List<Accidental> accidentalsToUse)
+    public void setAccidentalsToUse(Set<Accidental> accidentalsToUse)
     {
         this.accidentalsToUse = accidentalsToUse;
     }
