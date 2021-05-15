@@ -6,6 +6,7 @@ import org.kdp.frets.user.UserDao;
 import org.kdp.frets.websocket.WebSocket;
 import org.kdp.frets.websocket.response.Response;
 import org.kdp.frets.websocket.response.responses.GamesResponse;
+import org.kdp.frets.websocket.response.responses.JoinGameResponse;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -49,7 +50,9 @@ public class GameController
     public void sendToGameSessions(Long gameId, Response response)
     {
         executor.submit(() -> {
-//            webSocket.sendToSessionIds();
+            final var game = gameDao.getById(gameId).orElseThrow();
+            final var sessionIds = gameDao.getSessionIds(game);
+            webSocket.sendToSessionIds(sessionIds, response);
         });
     }
 
@@ -71,7 +74,8 @@ public class GameController
             final var game = gameDao.getById(gameId).orElseThrow();
             game.addPlayerId(userId);
             gameDao.updatePlayerIds(game);
-
+            broadcastGames();
+            sendToGameSessions(game.id, new JoinGameResponse(game));
         });
     }
 }

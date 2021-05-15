@@ -92,12 +92,4 @@ public class GameDao
                         .mapTo(User.class)
                         .list());
     }
-
-//        final Set<User> users = new HashSet<>();
-//        for (final var playerId : game.getPlayerIds()) {
-//            final var user = userDao.getById(playerId);
-//            user.ifPresent(users::add);
-//        }
-//        return users;
-//    }
 }

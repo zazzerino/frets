@@ -1,6 +1,6 @@
 <script lang="ts">
   import { playerCount } from '../game';
-  import { game, games } from '../../stores';
+  import { games } from '../../stores';
   import JoinGameButton from './JoinGameButton.svelte';
 </script>
 
