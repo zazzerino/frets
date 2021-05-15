@@ -4,7 +4,6 @@ import Home from './Home.svelte';
 import Login from './Login.svelte';
 import GamePage from './game/GamePage.svelte';
 import { page } from './stores';
-import * as _socket from './socket/socket';
 
 function setupRoutes() {
 	router('/', () => page.set(Home));

@@ -13,3 +13,7 @@ export interface Game {
 export function playerCount(game: Game): number {
   return game.playerIds.length;
 }
+
+export function formatTimestamp(game: Game) {
+  return new Date(game.createdAt).toLocaleString();
+}

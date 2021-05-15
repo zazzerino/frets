@@ -10,3 +10,5 @@ export const user: Writable<User> = writable(defaultUser);
 export const game: Writable<Game> = writable(null);
 
 export const games: Writable<Game[]> = writable([]);
+
+export const players: Writable<User[]> = writable([]);

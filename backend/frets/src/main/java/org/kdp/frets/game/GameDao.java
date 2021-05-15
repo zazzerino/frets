@@ -3,7 +3,6 @@ package org.kdp.frets.game;
 import org.kdp.frets.DatabaseConnection;
 import org.kdp.frets.theory.Accidental;
 import org.kdp.frets.user.User;
-import org.kdp.frets.user.UserDao;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -15,9 +14,6 @@ public class GameDao
 {
     @Inject
     DatabaseConnection dbConn;
-
-    @Inject
-    UserDao userDao;
 
     public Optional<Game> getById(Long gameId)
     {

@@ -1,7 +1,6 @@
 package org.kdp.frets.game;
 
 import org.kdp.frets.theory.Accidental;
-import org.kdp.frets.user.User;
 
 import java.time.Instant;
 import java.util.HashSet;
