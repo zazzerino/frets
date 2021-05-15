@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { sendLogin } from './socket/message';
+  import { sendLogin } from '../socket/message';
 
   let username: string;
 
@@ -21,7 +21,7 @@
   />
   
   <button
-    class="bg-blue-600 rounded px-4 py-2 m-auto text-white"
+    class="bg-blue-500 hover:bg-blue-400 rounded px-4 py-2 m-auto text-white"
     on:click={onClick}
   >
     Login

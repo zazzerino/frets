@@ -1,4 +1,4 @@
-import type { User } from '../user';
+import type { User } from '../user/user';
 import { user, game, games } from '../stores';
 import type { Game } from '../game/game';
 

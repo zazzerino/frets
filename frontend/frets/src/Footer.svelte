@@ -3,11 +3,11 @@
 </script>
 
 <div class="fixed bottom-0">
-  <p class="text-sm">
+  <p class="text-sm break-words">
     user: {JSON.stringify($user)}
   </p>
   {#if $game}
-    <p class="text-sm">
+    <p class="text-sm break-words">
       game: {JSON.stringify($game)}
     </p>
   {/if}

@@ -1,6 +1,6 @@
 import { writable, Writable } from 'svelte/store';
 import HomePage from './HomePage.svelte';
-import { defaultUser, User } from "./user";
+import { defaultUser, User } from "./user/user";
 import type { Game } from "./game/game";
 
 export const page: Writable<typeof HomePage> = writable(HomePage);

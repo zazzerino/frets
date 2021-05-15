@@ -4,7 +4,7 @@
 
 <button 
   on:click={sendCreateGame} 
-  class="bg-blue-600 rounded px-4 py-2 mt-4 text-white"
+  class="bg-blue-500 hover:bg-blue-400 rounded px-4 py-2 mt-8 text-white"
 >
   Create Game
 </button>

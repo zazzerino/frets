@@ -14,6 +14,10 @@ export function playerCount(game: Game): number {
   return game.playerIds.length;
 }
 
-export function formatTimestamp(game: Game) {
-  return new Date(game.createdAt).toLocaleString();
+export function formatTimestamp(timestamp: string) {
+  return new Date(timestamp).toLocaleString();
+}
+
+export function formatState(state: State) {
+  return state.toLowerCase().replace('_', ' ');
 }
