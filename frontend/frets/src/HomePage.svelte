@@ -1,3 +1,13 @@
-<h1 class="text-lg font-bold mb-4">Home</h1>
+<script lang="ts">
+  import CreateGameButton from './game/components/CreateGameButton.svelte';
+</script>
 
-<p class="">Welcome to frets.</p>
+<h1 class="text-lg font-bold mb-4">
+  Home
+</h1>
+
+<p class="">
+  Welcome to frets.
+</p>
+
+<CreateGameButton/>

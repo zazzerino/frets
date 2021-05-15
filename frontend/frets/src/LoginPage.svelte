@@ -13,11 +13,11 @@
 <h1 class="text-lg font-bold mb-4">Login</h1>
 
 <div class="flex flex-col ">
-  <!-- <label class="mb-4" for="name-input">Username</label> -->
-  <input class="mb-4 m-auto text-center shadow" 
+  <input class="mb-4 m-auto text-center shadow rounded" 
     id="name-input" 
     placeholder="Enter your name..." 
     bind:value={username}
+    on:keypress={key => key.code === 'Enter' && onClick()}
   />
   
   <button

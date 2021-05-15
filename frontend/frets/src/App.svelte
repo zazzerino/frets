@@ -1,75 +1,13 @@
 <script lang="ts">
   import { page } from './stores';
   import Navbar from './Navbar.svelte';
+  import Footer from './Footer.svelte';
 </script>
 
-<main class="m-4 text-center">
+<main class="m-4 text-center flex flex-col">
   <Navbar/>
-  <svelte:component this={$page}/>
+  <div class="flex-grow">
+    <svelte:component this={$page}/>
+  </div>
+  <Footer/>
 </main>
-
-<!-- <script lang="ts">
-  import logo from './assets/svelte.png'
-  import Counter from './lib/Counter.svelte'
-</script>
-
-<main>
-  <img src={logo} alt="Svelte Logo" class="mx-auto" />
-  <h1>Hello Typescript!</h1>
-
-  <Counter />
-
-  <p>
-    Visit <a class="text-blue-600 underline" href="https://svelte.dev">svelte.dev</a> to learn how to build Svelte
-    apps.
-  </p>
-
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme">SvelteKit</a> for
-    the officially supported framework, also powered by Vite!
-  </p>
-</main>
-
-<style style lang="postcss">
-  :root {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-      Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  }
-
-  main {
-    @apply text-center;
-    @apply p-4;
-    @apply mx-auto;
-  }
-
-  img {
-    height: 16rem;
-    width: 16rem;
-  }
-
-  h1 {
-    @apply text-red-600;
-    @apply uppercase;
-    @apply text-6xl;
-    @apply font-thin;
-    @apply leading-tight;
-    @apply my-8 mx-auto;
-    @apply max-w-xs;
-  }
-
-  p {
-    @apply max-w-xs;
-    margin: 1rem auto;
-    @apply leading-snug;
-  }
-
-  @screen sm {
-    h1 {
-      @apply max-w-none;
-    }
-
-    p {
-      @apply max-w-none;
-    }
-  }
-</style> -->
