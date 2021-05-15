@@ -20,9 +20,11 @@
           <td>{game.id}</td>
           <td>{game.state}</td>
           <td>{playerCount(game)}</td>
-          <td>
-            <JoinGameButton gameId={game.id}/>
-          </td>
+          {#if game.state !== 'GAME_OVER'}
+            <td>
+             <JoinGameButton gameId={game.id}/>
+            </td>
+          {/if}
         </tr>
       {/each}
     {/if}

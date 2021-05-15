@@ -76,7 +76,7 @@ public class WebSocket
         log.error("WEBSOCKET ERROR", throwable);
     }
 
-    public void sendToSessionId(Session session, Response response)
+    public void sendToSession(Session session, Response response)
     {
         session.getAsyncRemote()
                 .sendObject(response, result -> {
@@ -89,7 +89,7 @@ public class WebSocket
     public void sendToSessionId(String sessionId, Response response)
     {
         final var session = sessions.get(sessionId);
-        sendToSessionId(session, response);
+        sendToSession(session, response);
     }
 
     public void sendToSessionIds(Collection<String> sessionIds, Response response)
@@ -100,6 +100,6 @@ public class WebSocket
     public void broadcast(Response response)
     {
         sessions.values()
-                .forEach(s -> sendToSessionId(s, response));
+                .forEach(s -> sendToSession(s, response));
     }
 }

@@ -1,6 +1,6 @@
 import type { Message } from './message';
 import { 
-  handleLogin, Response, LoginResponse, handleCreateGame, CreateGameResponse, handleGames, GamesResponse, handleJoinGame, JoinGameResponse
+  handleLogin, Response, LoginResponse, handleCreateGame, CreateGameResponse, handleGames, GamesResponse, handleJoinGame, JoinGameResponse, handleGameUpdated, GameUpdatedResponse
 } from './response';
 
 export function sendMessage(message: Message) {
@@ -33,11 +33,12 @@ function onMessage(event: MessageEvent) {
     case 'LOGIN': return handleLogin(response as LoginResponse);
     case 'CREATE_GAME': return handleCreateGame(response as CreateGameResponse);
     case 'GAMES': return handleGames(response as GamesResponse);
+    case 'GAME_UPDATED': return handleGameUpdated(response as GameUpdatedResponse);
     case 'JOIN_GAME': return handleJoinGame(response as JoinGameResponse);
   }
 }
 
-function onClose(event: CloseEvent) {
+function onClose(_event: CloseEvent) {
   console.log('websocket connection closed...');
 }
 

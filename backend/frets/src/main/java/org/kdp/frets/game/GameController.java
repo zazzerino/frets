@@ -47,7 +47,7 @@ public class GameController
         });
     }
 
-    public void sendToGameSessions(Long gameId, Response response)
+    public void notifyPlayers(Long gameId, Response response)
     {
         executor.submit(() -> {
             final var game = gameDao.getById(gameId).orElseThrow();
@@ -76,7 +76,7 @@ public class GameController
             game.addPlayerId(userId);
             gameDao.updatePlayerIds(game);
             broadcastGames();
-            sendToGameSessions(game.id, new JoinGameResponse(game));
+            notifyPlayers(game.id, new JoinGameResponse(game));
         });
     }
 }

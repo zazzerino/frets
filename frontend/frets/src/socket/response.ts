@@ -6,6 +6,7 @@ export type ResponseType =
   'LOGIN'
   | 'CREATE_GAME'
   | 'GAMES'
+  | 'GAME_UPDATED'
   | 'JOIN_GAME';
 
 export interface Response {
@@ -45,5 +46,14 @@ export interface JoinGameResponse extends Response {
 }
 
 export function handleJoinGame(response: JoinGameResponse) {
+  game.set(response.game);
+}
+
+export interface GameUpdatedResponse extends Response {
+  type: 'GAME_UPDATED';
+  game: Game;
+}
+
+export function handleGameUpdated(response: GameUpdatedResponse) {
   game.set(response.game);
 }

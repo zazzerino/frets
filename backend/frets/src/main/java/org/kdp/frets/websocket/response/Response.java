@@ -6,6 +6,7 @@ public class Response
     {
         LOGIN,
         GAMES,
+        GAME_UPDATED,
         CREATE_GAME,
         JOIN_GAME
     }
