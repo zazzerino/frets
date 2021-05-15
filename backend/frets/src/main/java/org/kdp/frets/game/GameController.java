@@ -46,20 +46,6 @@ public class GameController
                 game.addPlayer(user);
                 log.info("creating game: " + game);
                 gameDao.create(game);
-//                addUserToGame(game, user);
-//                broadcastGames();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    public void addUserToGame(Game game, User user)
-    {
-        executor.submit(() -> {
-            try {
-                final var g = gameDao.addPlayerToGame(game, user);
-                log.info("added user: " + g);
                 broadcastGames();
             } catch (Exception e) {
                 e.printStackTrace();

@@ -51,32 +51,42 @@ public class DatabaseConnection
     }
 
     private Game gameRowMapper(ResultSet rs, StatementContext ctx)
+            throws SQLException
     {
-        try {
-            final var id = rs.getLong("id");
-            final var createdAt = rs.getTimestamp("created_at").toInstant();
+        final var id = rs.getLong("id");
+        final var createdAt = rs.getTimestamp("created_at").toInstant();
 
-            final var state = Game.State.valueOf(rs.getString("state"));
-            final var roundCount = rs.getInt("round_count");
+        final var state = Game.State.valueOf(rs.getString("state"));
+        final var roundCount = rs.getInt("round_count");
 
-            final var stringsArray = (Integer[]) rs.getArray("strings_to_use").getArray();
-            final var stringsToUse = Arrays.stream(stringsArray).collect(Collectors.toSet());
+        final var stringsArray = (Integer[]) rs.getArray("strings_to_use").getArray();
+        final var stringsToUse = Arrays.stream(stringsArray).collect(Collectors.toSet());
 
-            final var accidentalsArray = (String[]) rs.getArray("accidentals_to_use").getArray();
-            final Set<Accidental> accidentalsToUse = Arrays.stream(accidentalsArray)
-                    .map(Accidental::valueOf)
+        final var accidentalsArray = (String[]) rs.getArray("accidentals_to_use").getArray();
+        final var accidentalsToUse = Arrays.stream(accidentalsArray)
+                .map(Accidental::valueOf)
+                .collect(Collectors.toSet());
+
+        final var playerArray = rs.getArray("player_ids");
+        Set<Long> playerIds = null;
+
+        if (playerArray != null) {
+            final var intArray = (Integer[]) playerArray.getArray();
+            playerIds = Arrays.stream(intArray)
+                    .map(Integer::longValue)
                     .collect(Collectors.toSet());
-
-            final var game = new Game(id, createdAt);
-            game.setState(state);
-            game.setRoundCount(roundCount);
-            game.setStringsToUse(stringsToUse);
-            game.setAccidentalsToUse(accidentalsToUse);
-
-            return game;
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        return null;
+
+        final var game = new Game(id, createdAt);
+        game.setState(state);
+        game.setRoundCount(roundCount);
+        game.setStringsToUse(stringsToUse);
+        game.setAccidentalsToUse(accidentalsToUse);
+
+        if (playerIds != null) {
+            game.setPlayerIds(playerIds);
+        }
+
+        return game;
     }
 }
