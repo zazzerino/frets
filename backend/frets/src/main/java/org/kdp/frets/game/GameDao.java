@@ -53,7 +53,7 @@ public class GameDao
         });
     }
 
-    public void addPlayerToGame(Game game, User user)
+    public Game addPlayerToGame(Game game, User user)
     {
         dbConn.getJdbi().useHandle(handle -> {
             handle.execute("""
@@ -61,5 +61,7 @@ public class GameDao
                     VALUES (?, ?)""",
                     game.id, user.id);
         });
+
+        return game.addPlayer(user);
     }
 }

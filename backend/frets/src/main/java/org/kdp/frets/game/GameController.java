@@ -45,7 +45,8 @@ public class GameController
                 final var game = new Game();
                 log.info("creating game: " + game);
                 gameDao.create(game);
-//                broadcastGames();
+                addUserToGame(game, user);
+                broadcastGames();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -54,6 +55,14 @@ public class GameController
 
     public void addUserToGame(Game game, User user)
     {
-
+        executor.submit(() -> {
+            try {
+                final var g = gameDao.addPlayerToGame(game, user);
+                log.info("added user: " + g);
+                broadcastGames();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

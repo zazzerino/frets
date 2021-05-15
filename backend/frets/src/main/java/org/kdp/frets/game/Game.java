@@ -1,8 +1,10 @@
 package org.kdp.frets.game;
 
 import org.kdp.frets.theory.Accidental;
+import org.kdp.frets.user.User;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -12,7 +14,7 @@ public class Game
     public final Instant createdAt;
 
     private State state = State.INIT;
-    private Set<Long> playerIds = Set.of();
+    private Set<User> players = new HashSet<>();
 
     private int roundCount = DEFAULT_ROUND_COUNT;
     private Set<Integer> stringsToUse = Set.of(1, 2, 3, 4, 5, 6);
@@ -39,6 +41,18 @@ public class Game
     {
         this.id = id;
         this.createdAt = createdAt;
+    }
+
+    public Game addPlayer(User user)
+    {
+        players.add(user);
+        return this;
+    }
+
+    public Game removePlayer(User user)
+    {
+        players.remove(user);
+        return this;
     }
 
     public int getRoundCount()
@@ -83,12 +97,11 @@ public class Game
 
     public Set<Long> getPlayerIds()
     {
-        return playerIds;
+        return null;
     }
 
     public void setPlayerIds(Set<Long> playerIds)
     {
-        this.playerIds = playerIds;
     }
 
     @Override

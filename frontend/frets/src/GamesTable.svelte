@@ -12,7 +12,7 @@
   </thead>
   <tbody>
     {#if $games}
-      {#each $games.reverse() as game}
+      {#each $games as game}
         <tr>
           <td>{game.id}</td>
           <!-- <td>{game.playerCount}</td> -->
