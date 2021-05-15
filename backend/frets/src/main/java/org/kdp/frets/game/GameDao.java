@@ -77,14 +77,22 @@ public class GameDao
     {
         return dbConn.getJdbi()
                 .withHandle(handle -> handle
-                        .select("SELECT session_id FROM USERS WHERE id in (<player_ids>)")
+                        .select("SELECT session_id FROM users WHERE id in (<player_ids>)")
                         .bindList("player_ids", game.getPlayerIds())
                         .mapTo(String.class)
                         .list());
     }
 
-//    public Set<User> getPlayers(Game game)
-//    {
+    public List<User> getPlayers(Game game)
+    {
+        return dbConn.getJdbi()
+                .withHandle(handle -> handle
+                        .select("SELECT * FROM users WHERE id in (<player_ids>)")
+                        .bindList("player_ids", game.getPlayerIds())
+                        .mapTo(User.class)
+                        .list());
+    }
+
 //        final Set<User> users = new HashSet<>();
 //        for (final var playerId : game.getPlayerIds()) {
 //            final var user = userDao.getById(playerId);
