@@ -14,7 +14,7 @@ public class Game
     public final Instant createdAt;
 
     private State state = State.INIT;
-    private Set<User> players = new HashSet<>();
+    private Set<Long> playerIds = new HashSet<>();
 
     private int roundCount = DEFAULT_ROUND_COUNT;
     private Set<Integer> stringsToUse = Set.of(1, 2, 3, 4, 5, 6);
@@ -45,13 +45,13 @@ public class Game
 
     public Game addPlayer(User user)
     {
-        players.add(user);
+        playerIds.add(user.id);
         return this;
     }
 
     public Game removePlayer(User user)
     {
-        players.remove(user);
+        playerIds.remove(user.id);
         return this;
     }
 
@@ -97,11 +97,12 @@ public class Game
 
     public Set<Long> getPlayerIds()
     {
-        return null;
+        return playerIds;
     }
 
     public void setPlayerIds(Set<Long> playerIds)
     {
+        this.playerIds = playerIds;
     }
 
     @Override
@@ -114,6 +115,7 @@ public class Game
                 ", roundCount=" + roundCount +
                 ", stringsToUse=" + stringsToUse +
                 ", accidentalsToUse=" + accidentalsToUse +
+                ", playerIds=" + playerIds +
                 '}';
     }
 }

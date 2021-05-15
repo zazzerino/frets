@@ -1,5 +1,7 @@
 import type { Message } from './message';
-import { handleLogin, Response, LoginResponse, handleCreateGame, CreateGameResponse, handleGames, GamesResponse } from './response';
+import { 
+  handleLogin, Response, LoginResponse, handleCreateGame, CreateGameResponse, handleGames, GamesResponse
+} from './response';
 
 export function sendMessage(message: Message) {
   socket.send(JSON.stringify(message));

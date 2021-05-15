@@ -43,10 +43,11 @@ public class GameController
             try {
                 final var user = userDao.getBySessionId(sessionId).orElseThrow();
                 final var game = new Game();
+                game.addPlayer(user);
                 log.info("creating game: " + game);
                 gameDao.create(game);
-                addUserToGame(game, user);
-                broadcastGames();
+//                addUserToGame(game, user);
+//                broadcastGames();
             } catch (Exception e) {
                 e.printStackTrace();
             }

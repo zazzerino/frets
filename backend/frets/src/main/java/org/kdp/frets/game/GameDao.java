@@ -36,20 +36,32 @@ public class GameDao
     public void create(Game game)
     {
         dbConn.getJdbi().useHandle(handle -> {
-            handle.createUpdate("""
+            try {
+                handle.createUpdate("""
                     INSERT INTO games (id, created_at, state, round_count, strings_to_use, accidentals_to_use)
                     VALUES (:id, :created_at, :state, :round_count, :strings_to_use, :accidentals_to_use)""")
-                    .bind("id", game.id)
-                    .bind("created_at", game.createdAt)
-                    .bind("state", game.getState())
-                    .bind("round_count", game.getRoundCount())
-                    .bindArray("strings_to_use", Integer.class, game.getStringsToUse().toArray())
-                    .bindArray("accidentals_to_use", String.class,
-                            game.getAccidentalsToUse()
-                                    .stream()
-                                    .map(Accidental::toString)
-                                    .toArray())
-                    .execute();
+                        .bind("id", game.id)
+                        .bind("created_at", game.createdAt)
+                        .bind("state", game.getState())
+                        .bind("round_count", game.getRoundCount())
+                        .bindArray("strings_to_use", Integer.class, game.getStringsToUse().toArray())
+                        .bindArray("accidentals_to_use", String.class,
+                                game.getAccidentalsToUse()
+                                        .stream()
+                                        .map(Accidental::toString)
+                                        .toArray())
+                        .execute();
+
+                if (! game.getPlayerIds().isEmpty()) {
+                    handle.createUpdate("""
+                            UPDATE games SET player_ids = :player_ids WHERE id = :id""")
+                            .bind("id", game.id)
+                            .bindArray("player_ids", Long.class, game.getPlayerIds().toArray())
+                            .execute();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
     }
 
@@ -62,6 +74,7 @@ public class GameDao
                     game.id, user.id);
         });
 
-        return game.addPlayer(user);
+        final var g = game.addPlayer(user);
+        return g;
     }
 }

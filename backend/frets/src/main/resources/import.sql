@@ -22,7 +22,8 @@ CREATE TABLE games (
        state game_state NOT NULL,
        round_count integer NOT NULL,
        strings_to_use integer[] NOT NULL,
-       accidentals_to_use text[] NOT NULL
+       accidentals_to_use text[] NOT NULL,
+       player_ids integer[]
 );
 
 DROP TABLE IF EXISTS game_users;
