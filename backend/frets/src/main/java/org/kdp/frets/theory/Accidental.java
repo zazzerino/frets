@@ -9,6 +9,18 @@ public enum Accidental
     SHARP,
     DOUBLE_SHARP;
 
+    public static Accidental from(String name)
+    {
+        return switch (name) {
+            case "bb" -> DOUBLE_FLAT;
+            case "b" -> FLAT;
+            case "" -> NONE;
+            case "#" -> SHARP;
+            case "##" -> DOUBLE_SHARP;
+            default -> throw new IllegalStateException("Unexpected value: " + name);
+        };
+    }
+
     public int halfStepOffset()
     {
         return switch (this) {
