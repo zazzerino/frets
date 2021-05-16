@@ -21,3 +21,9 @@ export function formatTimestamp(timestamp: string) {
 export function formatState(state: State) {
   return state.toLowerCase().replace('_', ' ');
 }
+
+export interface Note {
+  whiteKey: string;
+  accidental: string;
+  octave: string;
+}

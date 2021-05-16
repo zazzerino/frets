@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { fade } from 'svelte/transition';
   import type { Game } from '../game';
   import { formatState } from '../game';
   import { playerCount, formatTimestamp } from '../game';
@@ -34,6 +35,7 @@
         <tr 
           class="hover:bg-green-100 cursor-pointer"
           on:click={() => handleClick(game)}
+          transition:fade
         >
           <td title="Click to join game" class="border px-2">
             {game.id}

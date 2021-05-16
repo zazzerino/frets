@@ -84,22 +84,26 @@ public class GameController
     }
 
     @Scheduled(every = "30s")
+    public void broadcastGameUpdates()
+    {
+        broadcastGames();
+    }
+
+    @Scheduled(every = "1m")
     public void cleanupFinishedGames()
     {
-        try {
-            executor.submit(() -> {
-                gameDao.getAll().forEach(game -> {
-                    final var isOld = game.createdAt.isBefore(
-                            Instant.now().minus(1, ChronoUnit.MINUTES));
-                    if (game.getState() == Game.State.GAME_OVER && isOld) {
-                        log.info("deleting old game: " + game);
-                        gameDao.delete(game);
-                        broadcastGames();
-                    }
-                });
+        executor.submit(() -> {
+            gameDao.getAll().forEach(game -> {
+                final var isOver = game.getState() == Game.State.GAME_OVER;
+                final var isOld = game.createdAt.isBefore(
+                        Instant.now().minus(1, ChronoUnit.MINUTES));
+
+                if (isOver && isOld) {
+                    log.info("deleting old game: " + game);
+                    gameDao.delete(game);
+                    broadcastGames();
+                }
             });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
     }
 }
