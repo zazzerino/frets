@@ -20,6 +20,7 @@
     "@types/page": "^1.11.2"
   },
   "dependencies": {
+    "fretboard-diagram": "^1.0.0",
     "page": "^1.11.6"
   }
 }

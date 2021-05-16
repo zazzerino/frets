@@ -14,7 +14,7 @@
       <a href="/game">Game</a>
     </li>
     <li class="flex-grow text-right mx-5">
-      <p>logged in as: 
+      <p>logged in as
         <span class="text-green-600">{$user.name}</span>
         <span class="text-gray-400">(id={ $user.id })</span>
       </p>

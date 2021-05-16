@@ -2,12 +2,10 @@ export const foo = 42;
 
 import type { Message } from './message';
 import { 
-  handleLogin, Response, LoginResponse, handleCreateGame, CreateGameResponse, handleGames, GamesResponse, handleJoinGame, JoinGameResponse, handleGameUpdated, GameUpdatedResponse
+  handleLogin, Response, LoginResponse, handleCreateGame, 
+  CreateGameResponse, handleGames, GamesResponse, handleJoinGame, 
+  JoinGameResponse, handleGameUpdated, GameUpdatedResponse
 } from './response';
-
-export function sendMessage(message: Message) {
-  socket.send(JSON.stringify(message));
-}
 
 const WEBSOCKET_URL = 'ws://localhost:8080/ws';
 
@@ -20,6 +18,10 @@ function makeSocket() {
   socket.onclose = onClose;
   socket.onerror = onError;
   return socket;
+}
+
+export function sendMessage(message: Message) {
+  socket.send(JSON.stringify(message));
 }
 
 function onOpen() {

@@ -46,8 +46,10 @@ public class GameDao
     {
         dbConn.getJdbi().useHandle(handle -> {
             handle.createUpdate("""
-                    INSERT INTO games (id, created_at, state, round_count, strings_to_use, accidentals_to_use)
-                    VALUES (:id, :created_at, :state, :round_count, :strings_to_use, :accidentals_to_use)""")
+                    INSERT INTO games
+                    (id, created_at, state, round_count, strings_to_use, accidentals_to_use)
+                    VALUES
+                    (:id, :created_at, :state, :round_count, :strings_to_use, :accidentals_to_use)""")
                     .bind("id", game.id)
                     .bind("created_at", game.createdAt)
                     .bind("state", game.getState())
@@ -63,6 +65,13 @@ public class GameDao
             if (! game.getPlayerIds().isEmpty()) {
                 updatePlayerIds(game);
             }
+        });
+    }
+
+    public void delete(Game game)
+    {
+        dbConn.getJdbi().useHandle(handle -> {
+            handle.execute("DELETE FROM games WHERE id = ?", game.id);
         });
     }
 

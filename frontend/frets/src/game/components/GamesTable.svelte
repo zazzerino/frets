@@ -7,13 +7,13 @@
 
   export function handleClick(game: Game) {
     const userId = $user.id;
-    const notAlreadyJoined = (! game.playerIds.includes(userId));
+    const alreadyJoined = game.playerIds.includes(userId);
 
-    if (game.state === 'INIT' && notAlreadyJoined) {
+    if (game.state === 'INIT' && (! alreadyJoined)) {
       sendJoinGame(game.id, userId);
     } else if (game.state !== 'INIT') {
       console.log("you can only join games with state 'INIT'");
-    } else if (! notAlreadyJoined) {
+    } else if (alreadyJoined) {
       console.log("you have already joined this game");
     }
   }

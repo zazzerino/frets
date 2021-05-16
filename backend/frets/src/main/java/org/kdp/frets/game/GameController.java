@@ -1,5 +1,6 @@
 package org.kdp.frets.game;
 
+import io.quarkus.scheduler.Scheduled;
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.jboss.logging.Logger;
 import org.kdp.frets.user.UserDao;
@@ -10,6 +11,8 @@ import org.kdp.frets.websocket.response.responses.JoinGameResponse;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @ApplicationScoped
 public class GameController
@@ -78,5 +81,25 @@ public class GameController
             broadcastGames();
             notifyPlayers(game.id, new JoinGameResponse(game));
         });
+    }
+
+    @Scheduled(every = "30s")
+    public void cleanupFinishedGames()
+    {
+        try {
+            executor.submit(() -> {
+                gameDao.getAll().forEach(game -> {
+                    final var isOld = game.createdAt.isBefore(
+                            Instant.now().minus(1, ChronoUnit.MINUTES));
+                    if (game.getState() == Game.State.GAME_OVER && isOld) {
+                        log.info("deleting old game: " + game);
+                        gameDao.delete(game);
+                        broadcastGames();
+                    }
+                });
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
