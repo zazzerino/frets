@@ -100,13 +100,13 @@ public class GameDao
                         .list());
     }
 
-    public Optional<Game> getUserGame(Long userId)
+    public List<Game> getUserGames(Long userId)
     {
         return dbConn.getJdbi()
                 .withHandle(handle -> handle
                         .select("SELECT * FROM games WHERE :user_id = ANY(player_ids)")
                         .bind("user_id", userId)
                         .mapTo(Game.class)
-                        .findFirst());
+                        .list());
     }
 }

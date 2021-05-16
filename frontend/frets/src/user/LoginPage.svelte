@@ -13,7 +13,7 @@
 <h1 class="text-lg font-bold mb-4">Login</h1>
 
 <div class="flex flex-col ">
-  <input class="mb-4 m-auto text-center shadow rounded" 
+  <input class="mb-4 m-auto text-center shadow rounded border-2 border-indigo-200" 
     id="name-input" 
     placeholder="Enter your name..." 
     bind:value={username}

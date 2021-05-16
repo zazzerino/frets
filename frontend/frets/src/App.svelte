@@ -1,13 +1,13 @@
 <script lang="ts">
   import { page } from './stores';
   import Navbar from './Navbar.svelte';
-  import Footer from './Footer.svelte';
+  // import Footer from './Footer.svelte';
 </script>
 
-<main class="m-4 text-center flex flex-col">
+<main class="text-center flex flex-col h-screen">
   <Navbar/>
   <div class="flex-grow">
     <svelte:component this={$page}/>
   </div>
-  <Footer/>
+  <!-- <Footer/> -->
 </main>

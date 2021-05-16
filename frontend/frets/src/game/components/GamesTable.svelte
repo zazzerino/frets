@@ -7,8 +7,9 @@
 
   export function handleClick(game: Game) {
     const userId = $user.id;
+    const hasntAlreadyJoined = (! game.playerIds.includes(userId));
 
-    if (game.state === 'INIT' && !game.playerIds.includes(userId)) {
+    if (game.state === 'INIT' && hasntAlreadyJoined) {
       sendJoinGame(game.id, userId);
     }
   }

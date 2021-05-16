@@ -6,7 +6,6 @@ import org.kdp.frets.game.GameController;
 import org.kdp.frets.game.GameDao;
 import org.kdp.frets.websocket.WebSocket;
 import org.kdp.frets.websocket.message.messages.LoginMessage;
-import org.kdp.frets.websocket.response.responses.GameUpdatedResponse;
 import org.kdp.frets.websocket.response.responses.LoginResponse;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -62,13 +61,18 @@ public class UserController
                     .ifPresent(user -> {
                         log.info("deleting user: " + user);
                         userDao.deleteBySessionId(sessionId);
-                        gameDao.getUserGame(user.id)
-                                .ifPresent(game -> {
-                                    game.removePlayerId(user.id);
-                                    gameDao.updatePlayerIds(game);
-                                    gameController.notifyPlayers(game.id, new GameUpdatedResponse(game));
-                                    gameController.broadcastGames();
-                                });
+                        gameDao.getUserGames(user.id).forEach(game -> {
+                            game.removePlayerId(user.id);
+                            gameDao.updatePlayerIds(game);
+                        });
+
+//                        gameDao.getUserGames(user.id)
+//                                .ifPresent(game -> {
+//                                    game.removePlayerId(user.id);
+//                                    gameDao.updatePlayerIds(game);
+//                                    gameController.notifyPlayers(game.id, new GameUpdatedResponse(game));
+//                                    gameController.broadcastGames();
+//                                });
                     });
         });
     }
