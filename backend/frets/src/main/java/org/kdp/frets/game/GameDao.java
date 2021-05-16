@@ -65,6 +65,10 @@ public class GameDao
             if (! game.getPlayerIds().isEmpty()) {
                 updatePlayerIds(game);
             }
+
+            if (game.getHostId() != null) {
+                updateHostId(game);
+            }
         });
     }
 
@@ -85,6 +89,15 @@ public class GameDao
                     .bind("id", game.id)
                     .bind("state", game.getState())
                     .bindArray("player_ids", Long.class, game.getPlayerIds().toArray())
+                    .execute();
+        });
+    }
+
+    public void updateHostId(Game game)
+    {
+        dbConn.getJdbi().useHandle(handle -> {
+            handle.createUpdate("UPDATE games SET host_id = :host_id")
+                    .bind("host_id", game.getHostId())
                     .execute();
         });
     }

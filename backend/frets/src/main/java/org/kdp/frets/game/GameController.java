@@ -65,6 +65,7 @@ public class GameController
             final var user = userDao.getBySessionId(sessionId).orElseThrow();
             final var game = new Game();
             game.addPlayerId(user.id);
+            game.setHostId(user.id);
             log.info("creating game: " + game);
             gameDao.create(game);
             broadcastGames();

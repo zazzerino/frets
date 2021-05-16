@@ -19,6 +19,7 @@ CREATE TABLE games (
        round_count integer NOT NULL,
        strings_to_use integer[] NOT NULL,
        accidentals_to_use text[] NOT NULL,
+       host_id integer NOT NULL,
        player_ids integer[]
 );
 
