@@ -83,11 +83,11 @@ public class GameController
         });
     }
 
-    @Scheduled(every = "10s")
-    public void broadcastGameUpdates()
-    {
-        broadcastGames();
-    }
+//    @Scheduled(every = "10s")
+//    public void broadcastGameUpdates()
+//    {
+//        broadcastGames();
+//    }
 
     @Scheduled(every = "5m")
     public void cleanupFinishedGames()

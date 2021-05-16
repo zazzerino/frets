@@ -47,9 +47,11 @@ public class GameDao
         dbConn.getJdbi().useHandle(handle -> {
             handle.createUpdate("""
                         INSERT INTO games
-                        (id, created_at, host_id, state, round_count, strings_to_use, accidentals_to_use)
+                        (id, created_at, host_id, state, round_count, strings_to_use,
+                        accidentals_to_use, tuning, start_fret, end_fret)
                         VALUES
-                        (:id, :created_at, :host_id, :state, :round_count, :strings_to_use, :accidentals_to_use)""")
+                        (:id, :created_at, :host_id, :state, :round_count, :strings_to_use,
+                        :accidentals_to_use, :tuning, :start_fret, :end_fret)""")
                     .bind("id", game.id)
                     .bind("created_at", game.createdAt)
                     .bind("host_id", game.hostId)
@@ -61,6 +63,9 @@ public class GameDao
                                     .stream()
                                     .map(Accidental::toString)
                                     .toArray())
+                    .bindArray("tuning", String.class, game.getTuning())
+                    .bind("start_fret", game.getStartFret())
+                    .bind("end_fret", game.getEndFret())
                     .execute();
 
             if (!game.getPlayerIds().isEmpty()) {

@@ -1,10 +1,10 @@
 package org.kdp.frets.game;
 
 import org.kdp.frets.theory.Accidental;
-import org.kdp.frets.theory.Fretboard;
 
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -17,12 +17,14 @@ public class Game
     private State state = State.INIT;
     private Set<Long> playerIds = new HashSet<>();
 
-    private int roundCount = DEFAULT_ROUND_COUNT;
+    private int roundCount = 4;
     private Set<Integer> stringsToUse = Set.of(1, 2, 3, 4, 5, 6);
     private Set<Accidental> accidentalsToUse = Set.of(Accidental.FLAT, Accidental.NONE, Accidental.SHARP);
+    private List<String> tuning = List.of("E5", "B4", "G4", "D4", "A3", "E3");
+    private int startFret = 0;
+    private int endFret = 4;
 
     private final static AtomicLong nextId = new AtomicLong(0);
-    private final static int DEFAULT_ROUND_COUNT = 4;
 
     public enum State
     {
@@ -108,6 +110,36 @@ public class Game
     public void setPlayerIds(Set<Long> playerIds)
     {
         this.playerIds = playerIds;
+    }
+
+    public List<String> getTuning()
+    {
+        return tuning;
+    }
+
+    public void setTuning(List<String> tuning)
+    {
+        this.tuning = tuning;
+    }
+
+    public int getStartFret()
+    {
+        return startFret;
+    }
+
+    public void setStartFret(int startFret)
+    {
+        this.startFret = startFret;
+    }
+
+    public int getEndFret()
+    {
+        return endFret;
+    }
+
+    public void setEndFret(int endFret)
+    {
+        this.endFret = endFret;
     }
 
     @Override

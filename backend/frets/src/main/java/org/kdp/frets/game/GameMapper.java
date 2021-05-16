@@ -32,6 +32,12 @@ public class GameMapper implements RowMapper<Game>
                 .map(Accidental::valueOf)
                 .collect(Collectors.toSet());
 
+        final var tuningArray = (String[]) rs.getArray("tuning").getArray();
+        final var tuning = Arrays.stream(tuningArray).toList();
+
+        final var startFret = rs.getInt("start_fret");
+        final var endFret = rs.getInt("end_fret");
+
         final var playerArray = rs.getArray("player_ids");
         Set<Long> playerIds = null;
 
@@ -48,6 +54,9 @@ public class GameMapper implements RowMapper<Game>
         game.setRoundCount(roundCount);
         game.setStringsToUse(stringsToUse);
         game.setAccidentalsToUse(accidentalsToUse);
+        game.setTuning(tuning);
+        game.setStartFret(startFret);
+        game.setEndFret(endFret);
 
         if (playerIds != null) {
             game.setPlayerIds(playerIds);
