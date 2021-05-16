@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { fade } from 'svelte/transition';
   import type { Game } from '../game';
   import { formatState } from '../game';
   import { playerCount, formatTimestamp } from '../game';
@@ -24,6 +23,7 @@
   <thead>
     <tr>
       <th class="bg-blue-100 text-left p-2">Id</th>
+      <th class="bg-blue-100 text-left p-2">Host Id</th>
       <th class="bg-blue-100 text-left p-2">Created At</th>
       <th class="bg-blue-100 text-left p-2">State</th>
       <th class="bg-blue-100 text-left p-2">Players</th>
@@ -35,10 +35,12 @@
         <tr 
           class="hover:bg-green-100 cursor-pointer"
           on:click={() => handleClick(game)}
-          transition:fade
         >
           <td title="Click to join game" class="border px-2">
             {game.id}
+          </td>
+          <td title="Click to join game" class="border px-2">
+            {game.hostId}
           </td>
           <td title="Click to join game" class="border px-2 text-left">
             {formatTimestamp(game.createdAt)}

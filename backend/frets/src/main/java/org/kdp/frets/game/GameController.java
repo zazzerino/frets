@@ -63,9 +63,8 @@ public class GameController
     {
         executor.submit(() -> {
             final var user = userDao.getBySessionId(sessionId).orElseThrow();
-            final var game = new Game();
+            final var game = new Game(user.id);
             game.addPlayerId(user.id);
-            game.setHostId(user.id);
             log.info("creating game: " + game);
             gameDao.create(game);
             broadcastGames();
@@ -84,20 +83,20 @@ public class GameController
         });
     }
 
-    @Scheduled(every = "30s")
+    @Scheduled(every = "10s")
     public void broadcastGameUpdates()
     {
         broadcastGames();
     }
 
-    @Scheduled(every = "1m")
+    @Scheduled(every = "5m")
     public void cleanupFinishedGames()
     {
         executor.submit(() -> {
             gameDao.getAll().forEach(game -> {
                 final var isOver = game.getState() == Game.State.GAME_OVER;
                 final var isOld = game.createdAt.isBefore(
-                        Instant.now().minus(1, ChronoUnit.MINUTES));
+                        Instant.now().minus(5, ChronoUnit.MINUTES));
 
                 if (isOver && isOld) {
                     log.info("deleting old game: " + game);

@@ -3,11 +3,12 @@ export type State = 'INIT' | 'PLAYING' | 'ROUND_OVER' | 'GAME_OVER';
 export interface Game {
   id: number;
   createdAt: string;
+  hostId: number;
   state: State;
-  playerIds: number[];
   roundCount: number;
   stringsToUse: number[];
   accidentalsToUse: string[];
+  playerIds: number[];
 }
 
 export function playerCount(game: Game): number {

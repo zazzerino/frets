@@ -4,6 +4,7 @@ import org.kdp.frets.DatabaseConnection;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -11,6 +12,15 @@ public class UserDao
 {
     @Inject
     DatabaseConnection dbConn;
+
+    public List<User> getAll()
+    {
+        return dbConn.getJdbi()
+                .withHandle(handle -> handle
+                        .select("SELECT * FROM users")
+                        .mapTo(User.class)
+                        .list());
+    }
 
     public Optional<User> getById(Long userId)
     {

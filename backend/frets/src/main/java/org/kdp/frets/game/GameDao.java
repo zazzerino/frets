@@ -46,12 +46,13 @@ public class GameDao
     {
         dbConn.getJdbi().useHandle(handle -> {
             handle.createUpdate("""
-                    INSERT INTO games
-                    (id, created_at, state, round_count, strings_to_use, accidentals_to_use)
-                    VALUES
-                    (:id, :created_at, :state, :round_count, :strings_to_use, :accidentals_to_use)""")
+                        INSERT INTO games
+                        (id, created_at, host_id, state, round_count, strings_to_use, accidentals_to_use)
+                        VALUES
+                        (:id, :created_at, :host_id, :state, :round_count, :strings_to_use, :accidentals_to_use)""")
                     .bind("id", game.id)
                     .bind("created_at", game.createdAt)
+                    .bind("host_id", game.hostId)
                     .bind("state", game.getState())
                     .bind("round_count", game.getRoundCount())
                     .bindArray("strings_to_use", Integer.class, game.getStringsToUse().toArray())
@@ -62,12 +63,8 @@ public class GameDao
                                     .toArray())
                     .execute();
 
-            if (! game.getPlayerIds().isEmpty()) {
+            if (!game.getPlayerIds().isEmpty()) {
                 updatePlayerIds(game);
-            }
-
-            if (game.getHostId() != null) {
-                updateHostId(game);
             }
         });
     }
@@ -89,15 +86,6 @@ public class GameDao
                     .bind("id", game.id)
                     .bind("state", game.getState())
                     .bindArray("player_ids", Long.class, game.getPlayerIds().toArray())
-                    .execute();
-        });
-    }
-
-    public void updateHostId(Game game)
-    {
-        dbConn.getJdbi().useHandle(handle -> {
-            handle.createUpdate("UPDATE games SET host_id = :host_id")
-                    .bind("host_id", game.getHostId())
                     .execute();
         });
     }

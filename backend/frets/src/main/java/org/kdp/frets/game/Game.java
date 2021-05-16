@@ -1,6 +1,7 @@
 package org.kdp.frets.game;
 
 import org.kdp.frets.theory.Accidental;
+import org.kdp.frets.theory.Fretboard;
 
 import java.time.Instant;
 import java.util.HashSet;
@@ -11,15 +12,14 @@ public class Game
 {
     public final Long id;
     public final Instant createdAt;
+    public final Long hostId;
 
     private State state = State.INIT;
     private Set<Long> playerIds = new HashSet<>();
-    private Long hostId;
 
     private int roundCount = DEFAULT_ROUND_COUNT;
     private Set<Integer> stringsToUse = Set.of(1, 2, 3, 4, 5, 6);
-    private Set<Accidental> accidentalsToUse =
-            Set.of(Accidental.FLAT, Accidental.NONE, Accidental.SHARP);
+    private Set<Accidental> accidentalsToUse = Set.of(Accidental.FLAT, Accidental.NONE, Accidental.SHARP);
 
     private final static AtomicLong nextId = new AtomicLong(0);
     private final static int DEFAULT_ROUND_COUNT = 4;
@@ -32,16 +32,18 @@ public class Game
         GAME_OVER
     }
 
-    public Game()
+    public Game(Long hostId)
     {
         id = nextId.getAndIncrement();
         createdAt = Instant.now();
+        this.hostId = hostId;
     }
 
-    public Game(Long id, Instant createdAt)
+    public Game(Long id, Instant createdAt, Long hostId)
     {
         this.id = id;
         this.createdAt = createdAt;
+        this.hostId = hostId;
     }
 
     public void addPlayerId(Long playerId)
@@ -96,16 +98,6 @@ public class Game
     public void setState(State state)
     {
         this.state = state;
-    }
-
-    public Long getHostId()
-    {
-        return hostId;
-    }
-
-    public void setHostId(Long hostId)
-    {
-        this.hostId = hostId;
     }
 
     public Set<Long> getPlayerIds()
