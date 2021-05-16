@@ -16,7 +16,7 @@
     <li class="flex-grow text-right mx-5">
       <p>logged in as: 
         <span class="text-green-600">{$user.name}</span>
-        <span>({ $user.id })</span>
+        <span class="text-gray-400">(id={ $user.id })</span>
       </p>
     </li>
   </ul>
