@@ -15,6 +15,7 @@ public class UserMapper implements RowMapper<User>
         return new User(
                 rs.getLong("id"),
                 rs.getString("name"),
-                rs.getString("session_id"));
+                rs.getString("session_id"),
+                rs.getLong("game_id"));
     }
 }

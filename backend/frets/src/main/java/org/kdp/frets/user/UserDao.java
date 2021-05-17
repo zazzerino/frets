@@ -45,11 +45,12 @@ public class UserDao
         dbConn.getJdbi().useHandle(handle -> {
             handle.execute(
                     """
-                    INSERT INTO users (id, name, session_id)
-                    VALUES (?, ?, ?)""",
+                    INSERT INTO users (id, name, session_id, game_id)
+                    VALUES (?, ?, ?, ?)""",
                     user.id,
                     user.getName(),
-                    user.sessionId);
+                    user.sessionId,
+                    user.getGameId());
         });
     }
 
@@ -71,6 +72,13 @@ public class UserDao
     {
         dbConn.getJdbi().useHandle(handle -> {
             handle.execute("UPDATE users SET name = ? WHERE id = ?", user.getName(), user.id);
+        });
+    }
+
+    public void updateGameId(User user)
+    {
+        dbConn.getJdbi().useHandle(handle -> {
+            handle.execute("UPDATE users SET game_id = ? WHERE id = ?", user.getGameId(), user.id);
         });
     }
 }

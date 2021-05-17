@@ -56,18 +56,18 @@ public class UserController
 
     public void sessionClosed(String sessionId)
     {
-        executor.submit(() -> {
-            userDao.getBySessionId(sessionId)
-                    .ifPresent(user -> {
-                        log.info("deleting user: " + user);
-                        userDao.deleteBySessionId(sessionId);
-                        gameDao.getUserGames(user.id).forEach(game -> {
-                            game.removePlayerId(user.id);
-                            gameDao.updatePlayerIds(game);
-                            gameController.notifyPlayers(game.id, new GameUpdatedResponse(game));
-                            gameController.broadcastGames();
-                        });
-                    });
-        });
+//        executor.submit(() -> {
+//            userDao.getBySessionId(sessionId)
+//                    .ifPresent(user -> {
+//                        log.info("deleting user: " + user);
+//                        userDao.deleteBySessionId(sessionId);
+//                        gameDao.getUserGames(user.id).forEach(game -> {
+//                            game.removePlayerId(user.id);
+//                            gameDao.updatePlayerIds(game);
+//                            gameController.notifyPlayers(game.id, new GameUpdatedResponse(game));
+//                            gameController.broadcastGames();
+//                        });
+//                    });
+//        });
     }
 }

@@ -62,24 +62,27 @@ public class GameController
     {
         executor.submit(() -> {
             final var user = userDao.getBySessionId(sessionId).orElseThrow();
-            final var game = new Game(user.id);
-            game.addPlayerId(user.id);
+            final var game = new Game(user);
             log.info("creating game: " + game);
+
+            user.setGameId(game.id);
+            userDao.updateGameId(user);
+
             gameDao.create(game);
-            broadcastGames();
-            webSocket.sendToSessionId(sessionId, new JoinGameResponse(game));
+//            webSocket.sendToSessionId(sessionId, new JoinGameResponse(game));
+//            broadcastGames();
         });
     }
 
     public void addUserToGame(Long gameId, Long userId)
     {
-        executor.submit(() -> {
-            final var game = gameDao.getById(gameId).orElseThrow();
-            game.addPlayerId(userId);
-            gameDao.updatePlayerIds(game);
-            broadcastGames();
-            notifyPlayers(game.id, new JoinGameResponse(game));
-        });
+//        executor.submit(() -> {
+//            final var game = gameDao.getById(gameId).orElseThrow();
+//            game.addPlayerId(userId);
+//            gameDao.updatePlayerIds(game);
+//            broadcastGames();
+//            notifyPlayers(game.id, new JoinGameResponse(game));
+//        });
     }
 
 //    @Scheduled(every = "10s")
