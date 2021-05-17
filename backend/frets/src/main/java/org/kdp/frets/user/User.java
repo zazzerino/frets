@@ -1,5 +1,6 @@
 package org.kdp.frets.user;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class User
@@ -44,5 +45,20 @@ public class User
                 ", name='" + name + '\'' +
                 ", sessionId='" + sessionId + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id.equals(user.id) && sessionId.equals(user.sessionId) && name.equals(user.name);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(id, sessionId, name);
     }
 }

@@ -6,8 +6,7 @@ import org.jboss.logging.Logger;
 import org.kdp.frets.user.UserDao;
 import org.kdp.frets.websocket.WebSocket;
 import org.kdp.frets.websocket.response.Response;
-import org.kdp.frets.websocket.response.responses.GamesResponse;
-import org.kdp.frets.websocket.response.responses.JoinGameResponse;
+import org.kdp.frets.websocket.response.responses.*;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

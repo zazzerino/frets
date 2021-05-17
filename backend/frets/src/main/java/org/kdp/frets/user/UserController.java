@@ -46,9 +46,8 @@ public class UserController
     public void login(String sessionId, LoginMessage message)
     {
         executor.submit(() -> {
-            final var name = message.name;
             final var user = userDao.getBySessionId(sessionId).orElseThrow();
-            user.setName(name);
+            user.setName(message.name);
             log.info("user logged in: " + user);
             userDao.updateName(user);
             webSocket.sendToSessionId(sessionId, new LoginResponse(user));

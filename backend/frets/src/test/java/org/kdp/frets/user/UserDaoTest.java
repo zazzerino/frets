@@ -15,7 +15,7 @@ public class UserDaoTest
 
     @Test
     @TestTransaction
-    public void testCreateUser()
+    public void testCreateAndFindUser()
     {
         Assertions.assertTrue(userDao.getAll().isEmpty());
 
@@ -31,5 +31,19 @@ public class UserDaoTest
         Assertions.assertEquals(user.getName(), foundUser.getName());
         Assertions.assertEquals(user.sessionId, foundUser.sessionId);
         Assertions.assertEquals(user, foundUser);
+    }
+
+    @Test
+    @TestTransaction
+    public void testUpdateName()
+    {
+        final var user = new User("session0");
+        userDao.create(user);
+        Assertions.assertEquals(User.DEFAULT_NAME, user.getName());
+        user.setName("Alice");
+        userDao.updateName(user);
+
+        final var foundUser = userDao.getById(user.id).orElseThrow();
+        Assertions.assertEquals("Alice", foundUser.getName());
     }
 }
