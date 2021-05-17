@@ -53,12 +53,12 @@ public class UserDao
         });
     }
 
-    public void deleteById(Long id)
-    {
-        dbConn.getJdbi().useHandle(handle -> {
-            handle.execute("DELETE FROM users WHERE id = ?", id);
-        });
-    }
+//    public void deleteById(Long id)
+//    {
+//        dbConn.getJdbi().useHandle(handle -> {
+//            handle.execute("DELETE FROM users WHERE id = ?", id);
+//        });
+//    }
 
     public void deleteBySessionId(String sessionId)
     {

@@ -99,7 +99,7 @@ public class GameController
                         Instant.now().minus(5, ChronoUnit.MINUTES));
 
                 if (isOver && isOld) {
-                    log.info("deleting old game: " + game);
+                    log.info("deleting game: " + game);
                     gameDao.delete(game);
                     broadcastGames();
                 }

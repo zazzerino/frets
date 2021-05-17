@@ -2,7 +2,6 @@ package org.kdp.frets.game;
 
 import org.kdp.frets.DatabaseConnection;
 import org.kdp.frets.theory.Accidental;
-import org.kdp.frets.user.User;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -68,7 +67,7 @@ public class GameDao
                     .bind("end_fret", game.getEndFret())
                     .execute();
 
-            if (!game.getPlayerIds().isEmpty()) {
+            if (! game.getPlayerIds().isEmpty()) {
                 updatePlayerIds(game);
             }
         });
@@ -105,15 +104,15 @@ public class GameDao
                         .list());
     }
 
-    public List<User> getPlayers(Game game)
-    {
-        return dbConn.getJdbi()
-                .withHandle(handle -> handle
-                        .select("SELECT * FROM users WHERE id in (<player_ids>)")
-                        .bindList("player_ids", game.getPlayerIds())
-                        .mapTo(User.class)
-                        .list());
-    }
+//    public List<User> getPlayers(Game game)
+//    {
+//        return dbConn.getJdbi()
+//                .withHandle(handle -> handle
+//                        .select("SELECT * FROM users WHERE id in (<player_ids>)")
+//                        .bindList("player_ids", game.getPlayerIds())
+//                        .mapTo(User.class)
+//                        .list());
+//    }
 
     public List<Game> getUserGames(Long userId)
     {
