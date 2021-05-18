@@ -10,8 +10,6 @@ import org.kdp.frets.websocket.response.responses.*;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 @ApplicationScoped
 public class GameController
@@ -33,11 +31,16 @@ public class GameController
 
     public void broadcastGames()
     {
-//        executor.submit(() -> {
-//            log.info("broadcasting games...");
-//            final var games = gameDao.getAllByNewest();
-//            webSocket.broadcast(new GamesResponse(games));
-//        });
+        try {
+            executor.submit(() -> {
+                log.info("broadcasting games...");
+                final var games = gameDao.getAllByNewest();
+                log.info("games: " + games);
+                webSocket.broadcast(new GamesResponse(games));
+            });
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 
     public void sendGamesToSessionId(String sessionId)
@@ -60,18 +63,22 @@ public class GameController
 
     public void createGame(String sessionId)
     {
-        executor.submit(() -> {
-            final var user = userDao.getBySessionId(sessionId).orElseThrow();
-            final var game = new Game(user.id);
-            log.info("creating game: " + game);
+        try {
+            executor.submit(() -> {
+                final var user = userDao.getBySessionId(sessionId).orElseThrow();
+                final var game = new Game(user.id);
+                log.info("creating game: " + game);
 
-//            user.setGameId(game.id);
-//            userDao.updateGameId(user);
+                user.setGameId(game.id);
+                userDao.updateGameId(user);
 
-//            gameDao.create(game);
-//            webSocket.sendToSessionId(sessionId, new JoinGameResponse(game));
-//            broadcastGames();
-        });
+                gameDao.create(game);
+                webSocket.sendToSessionId(sessionId, new JoinGameResponse(game));
+                broadcastGames();
+            });
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 
     public void addUserToGame(Long gameId, Long userId)

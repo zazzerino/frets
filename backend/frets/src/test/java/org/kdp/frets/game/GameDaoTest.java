@@ -5,16 +5,15 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.kdp.frets.user.User;
 import org.kdp.frets.user.UserDao;
 
 import javax.inject.Inject;
+import java.util.Set;
 
 @QuarkusTest
 public class GameDaoTest
 {
-    @Inject
-    Logger log;
-
     @Inject
     GameDao gameDao;
 
@@ -35,6 +34,17 @@ public class GameDaoTest
 
     @Test
     @TestTransaction
+    public void testDeleteGame()
+    {
+        final var game = new Game(0L);
+        gameDao.create(game);
+        Assertions.assertEquals(1, gameDao.getAll().size());
+        gameDao.delete(game);
+        Assertions.assertTrue(gameDao.getAll().isEmpty());
+    }
+
+    @Test
+    @TestTransaction
     public void testGetByIdAndEquals()
     {
         final var game = new Game(0L);
@@ -42,6 +52,38 @@ public class GameDaoTest
 
         final var foundGame = gameDao.getById(game.id).orElseThrow();
         Assertions.assertEquals(game, foundGame);
+    }
+
+    @Test
+    @TestTransaction
+    public void testGetAllNewest()
+    {
+        Assertions.assertTrue(gameDao.getAll().isEmpty());
+
+        final var game = new Game(0L);
+        gameDao.create(game);
+
+        Assertions.assertEquals(1, gameDao.getAll().size());
+        Assertions.assertEquals(1, gameDao.getAllByNewest().size());
+        Assertions.assertEquals(Set.of(gameDao.getAll()), Set.of(gameDao.getAllByNewest()));
+    }
+
+    @Test
+    @TestTransaction
+    public void testAddAndRemovePlayerId()
+    {
+        final var user0 = new User("s0");
+        final var user1 = new User("s1");
+        final var game0 = new Game(user0.id);
+
+        game0.addPlayerId(user1.id);
+        Assertions.assertEquals(2, game0.getPlayerIds().size());
+
+        game0.removePlayerId(user1.id);
+        Assertions.assertEquals(1, game0.getPlayerIds().size());
+
+        game0.removePlayerId(user0.id);
+        Assertions.assertTrue(game0.getPlayerIds().isEmpty());
     }
 }
 

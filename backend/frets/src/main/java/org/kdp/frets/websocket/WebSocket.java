@@ -88,8 +88,7 @@ public class WebSocket
 
     public void sendToSessionId(String sessionId, Response response)
     {
-        final var session = sessions.get(sessionId);
-        sendToSession(session, response);
+        sendToSession(sessions.get(sessionId), response);
     }
 
     public void sendToSessionIds(Collection<String> sessionIds, Response response)

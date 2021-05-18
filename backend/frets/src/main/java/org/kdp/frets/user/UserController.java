@@ -58,12 +58,25 @@ public class UserController
     {
         try {
             executor.submit(() -> {
-                userDao.deleteBySessionId(sessionId);
+                final var user = userDao.getBySessionId(sessionId).orElseThrow();
+                final var gameId = user.getGameId();
+
+//                if (gameId != null) {
+////                    gameDao.updatePlayerIdsAndState(game);
+////
+//                    user.setGameId(null);
+//                    userDao.updateGameId(user);
+////
+////                    gameController.notifyPlayers(game.id, new GameUpdatedResponse(game));
+////                    gameController.broadcastGames();
+//                }
+
+                userDao.delete(user);
             });
         } catch (Exception e) {
             log.error(e.getMessage());
         }
-
+    }
 //        executor.submit(() -> {
 //            userDao.getBySessionId(sessionId)
 //                    .ifPresent(user -> {
@@ -77,5 +90,4 @@ public class UserController
 //                        });
 //                    });
 //        });
-    }
 }

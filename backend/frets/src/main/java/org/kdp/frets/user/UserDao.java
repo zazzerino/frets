@@ -42,21 +42,21 @@ public class UserDao
 
     public void create(User user)
     {
-        dbConn.getJdbi().useHandle(handle -> {
-            handle.execute("""
+        dbConn.getJdbi().useHandle(handle -> handle
+                .execute("""
                     INSERT INTO users (id, name, session_id, game_id)
                     VALUES (?, ?, ?, ?)""",
-                    user.id,
-                    user.getName(),
-                    user.sessionId,
-                    user.getGameId());
-        });
+                        user.id,
+                        user.getName(),
+                        user.sessionId,
+                        user.getGameId())
+        );
     }
 
-    public void deleteById(Long id)
+    public void delete(User user)
     {
         dbConn.getJdbi().useHandle(handle -> {
-            handle.execute("DELETE FROM users WHERE id = ?", id);
+            handle.execute("DELETE FROM users WHERE id = ?", user.id);
         });
     }
 

@@ -2,8 +2,6 @@ package org.kdp.frets.game;
 
 import java.sql.Time;
 import java.time.Instant;
-import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -89,7 +87,12 @@ public class Game
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Game game = (Game) o;
-        return id.equals(game.id) && new Time(createdAt.toEpochMilli()).equals(new Time(game.createdAt.toEpochMilli())) && hostId.equals(game.hostId) && state == game.state && playerIds.equals(game.playerIds);
+        return id.equals(game.id)
+                // convert createdAt to Time to ignore loss of precision after saving and retrieving from postgres
+                && new Time(createdAt.toEpochMilli()).equals(new Time(game.createdAt.toEpochMilli()))
+                && hostId.equals(game.hostId)
+                && state == game.state
+                && playerIds.equals(game.playerIds);
     }
 
     @Override

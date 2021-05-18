@@ -1,16 +1,10 @@
 package org.kdp.frets.game;
 
 import org.jboss.logging.Logger;
-import org.jdbi.v3.core.mapper.RowMapperFactory;
-import org.jdbi.v3.core.mapper.reflect.BeanMapper;
-import org.jdbi.v3.core.mapper.reflect.ConstructorMapper;
 import org.kdp.frets.DatabaseConnection;
-import org.kdp.frets.theory.Accidental;
-import org.kdp.frets.user.User;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,39 +30,6 @@ public class GameDao
         return Optional.empty();
     }
 
-//        return dbConn.getJdbi().withHandle(handle -> handle
-//                .createQuery("""
-//                    SELECT games.id g_id, created_at g_created_at, host_id g_host_id, state g_state,
-//                    users.id u_id, name u_name, session_id u_session_id, game_id u_game_id
-//                    FROM games
-//                    JOIN users on games.id = users.game_id
-//                    WHERE games.id = :id;""")
-//                .bind("id", gameId)
-//                .map((rs, ctx) -> {
-//                    final var user = new User(
-//                            rs.getLong("u_id"),
-//                            rs.getString("u_name"),
-//                            rs.getString("u_session_id"),
-//                            rs.getLong("u_game_id"));
-//
-//                    return new Game(new User("asdf"));
-//                })
-//                .findFirst());
-
-//                .registerRowMapper(BeanMapper.factory(Game.class, "g"))
-//                .registerRowMapper(BeanMapper.factory(User.class, "u"))
-//                .reduceRows(new LinkedHashMap<Long, Game>(), (map, rowView) -> {
-//                    final var game = map.computeIfAbsent(
-//                            rowView.getColumn("g_id", Long.class),
-//                            _id -> rowView.getRow(Game.class));
-//                    if (rowView.getColumn("u_id", Long.class) != null) {
-//                        game.addPlayer(rowView.getRow(User.class));
-//                    }
-//                    return map;
-//                })
-//                .values()
-//                .stream()
-//                .findFirst());
 
     public List<Game> getAll()
     {
@@ -143,19 +104,23 @@ public class GameDao
         });
     }
 
-//    public void updatePlayerIds(Game game)
-//    {
-//        dbConn.getJdbi().useHandle(handle -> {
-//            handle.createUpdate("""
-//                    UPDATE games
-//                    SET player_ids = :player_ids, state = :state
-//                    WHERE id = :id""")
-//                    .bind("id", game.id)
-//                    .bind("state", game.getState())
-//                    .bindArray("player_ids", Long.class, game.getPlayerIds().toArray())
-//                    .execute();
-//        });
-//    }
+    public void updatePlayerIdsAndState(Game game)
+    {
+        try {
+            dbConn.getJdbi().useHandle(handle -> {
+                handle.createUpdate("""
+                        UPDATE games
+                        SET player_ids = :player_ids, state = :state
+                        WHERE id = :id""")
+                        .bind("id", game.id)
+                        .bind("state", game.getState())
+                        .bindArray("player_ids", Long.class, game.getPlayerIds().toArray())
+                        .execute();
+            });
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+    }
 
     public List<String> getSessionIds(Game game)
     {
@@ -188,3 +153,37 @@ public class GameDao
                         .list());
     }
 }
+
+//        return dbConn.getJdbi().withHandle(handle -> handle
+//                .createQuery("""
+//                    SELECT games.id g_id, created_at g_created_at, host_id g_host_id, state g_state,
+//                    users.id u_id, name u_name, session_id u_session_id, game_id u_game_id
+//                    FROM games
+//                    JOIN users on games.id = users.game_id
+//                    WHERE games.id = :id;""")
+//                .bind("id", gameId)
+//                .map((rs, ctx) -> {
+//                    final var user = new User(
+//                            rs.getLong("u_id"),
+//                            rs.getString("u_name"),
+//                            rs.getString("u_session_id"),
+//                            rs.getLong("u_game_id"));
+//
+//                    return new Game(new User("asdf"));
+//                })
+//                .findFirst());
+
+//                .registerRowMapper(BeanMapper.factory(Game.class, "g"))
+//                .registerRowMapper(BeanMapper.factory(User.class, "u"))
+//                .reduceRows(new LinkedHashMap<Long, Game>(), (map, rowView) -> {
+//                    final var game = map.computeIfAbsent(
+//                            rowView.getColumn("g_id", Long.class),
+//                            _id -> rowView.getRow(Game.class));
+//                    if (rowView.getColumn("u_id", Long.class) != null) {
+//                        game.addPlayer(rowView.getRow(User.class));
+//                    }
+//                    return map;
+//                })
+//                .values()
+//                .stream()
+//                .findFirst());
