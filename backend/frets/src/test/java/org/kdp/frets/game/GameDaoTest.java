@@ -2,11 +2,9 @@ package org.kdp.frets.game;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
-import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kdp.frets.user.User;
-import org.kdp.frets.user.UserDao;
 
 import javax.inject.Inject;
 import java.util.Set;
@@ -16,9 +14,6 @@ public class GameDaoTest
 {
     @Inject
     GameDao gameDao;
-
-    @Inject
-    UserDao userDao;
 
     @Test
     @TestTransaction
@@ -74,16 +69,41 @@ public class GameDaoTest
     {
         final var user0 = new User("s0");
         final var user1 = new User("s1");
-        final var game0 = new Game(user0.id);
 
-        game0.addPlayerId(user1.id);
-        Assertions.assertEquals(2, game0.getPlayerIds().size());
+        final var game = new Game(user0.id);
+        gameDao.create(game);
 
-        game0.removePlayerId(user1.id);
-        Assertions.assertEquals(1, game0.getPlayerIds().size());
+        Assertions.assertEquals(
+                1,
+                gameDao.getById(game.id).orElseThrow().getPlayerIds().size());
 
-        game0.removePlayerId(user0.id);
-        Assertions.assertTrue(game0.getPlayerIds().isEmpty());
+        game.addPlayerId(user1.id);
+        gameDao.updatePlayerIdsAndState(game);
+
+        Assertions.assertEquals(
+                2,
+                gameDao.getById(game.id).orElseThrow().getPlayerIds().size());
+
+        game.removePlayerId(user1.id);
+        gameDao.updatePlayerIdsAndState(game);
+        Assertions.assertEquals(
+                1,
+                gameDao.getById(game.id).orElseThrow().getPlayerIds().size());
+
+        game.removePlayerId(user0.id);
+        gameDao.updatePlayerIdsAndState(game);
+
+        Assertions.assertTrue(gameDao
+                .getById(game.id)
+                .orElseThrow()
+                .getPlayerIds()
+                .isEmpty());
+
+        Assertions.assertEquals(
+                Game.State.GAME_OVER,
+                gameDao.getById(game.id)
+                        .orElseThrow()
+                        .getState());
     }
 }
 

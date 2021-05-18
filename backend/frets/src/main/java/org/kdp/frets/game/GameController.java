@@ -39,17 +39,21 @@ public class GameController
                 webSocket.broadcast(new GamesResponse(games));
             });
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error(e.getStackTrace());
         }
     }
 
     public void sendGamesToSessionId(String sessionId)
     {
-//        executor.submit(() -> {
-//            log.info("sending games to session: " + sessionId);
-//            final var games = gameDao.getAllByNewest();
-//            webSocket.sendToSessionId(sessionId, new GamesResponse(games));
-//        });
+        try {
+            executor.submit(() -> {
+                log.info("sending games to session: " + sessionId);
+                final var games = gameDao.getAllByNewest();
+                webSocket.sendToSessionId(sessionId, new GamesResponse(games));
+            });
+        } catch (Exception e) {
+            log.error(e.getStackTrace());
+        }
     }
 
     public void notifyPlayers(Long gameId, Response response)
@@ -77,7 +81,7 @@ public class GameController
                 broadcastGames();
             });
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error(e.getStackTrace());
         }
     }
 

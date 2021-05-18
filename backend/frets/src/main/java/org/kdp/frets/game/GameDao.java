@@ -19,15 +19,10 @@ public class GameDao
 
     public Optional<Game> getById(Long gameId)
     {
-        try {
-            return dbConn.getJdbi().withHandle(handle -> handle
-                    .select("SELECT * FROM games WHERE id = ?", gameId)
-                    .mapTo(Game.class)
-                    .findFirst());
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
-        return Optional.empty();
+        return dbConn.getJdbi().withHandle(handle -> handle
+                .select("SELECT * FROM games WHERE id = ?", gameId)
+                .mapTo(Game.class)
+                .findFirst());
     }
 
 
@@ -67,34 +62,6 @@ public class GameDao
             e.printStackTrace();
         }
 
-//        dbConn.getJdbi().useHandle(handle -> {
-//            handle.createUpdate("""
-//                        INSERT INTO games
-//                        (id, created_at, host_id, state, round_count, strings_to_use,
-//                        accidentals_to_use, tuning, start_fret, end_fret)
-//                        VALUES
-//                        (:id, :created_at, :host_id, :state, :round_count, :strings_to_use,
-//                        :accidentals_to_use, :tuning, :start_fret, :end_fret)""")
-//                    .bind("id", game.id)
-//                    .bind("created_at", game.createdAt)
-//                    .bind("host_id", game.hostId)
-//                    .bind("state", game.getState())
-//                    .bind("round_count", game.getRoundCount())
-//                    .bindArray("strings_to_use", Integer.class, game.getStringsToUse().toArray())
-//                    .bindArray("accidentals_to_use", String.class,
-//                            game.getAccidentalsToUse()
-//                                    .stream()
-//                                    .map(Accidental::toString)
-//                                    .toArray())
-//                    .bindArray("tuning", String.class, game.getTuning())
-//                    .bind("start_fret", game.getStartFret())
-//                    .bind("end_fret", game.getEndFret())
-//                    .execute();
-//
-//            if (! game.getPlayerIds().isEmpty()) {
-//                updatePlayerIds(game);
-//            }
-//        });
     }
 
     public void delete(Game game)
@@ -187,3 +154,32 @@ public class GameDao
 //                .values()
 //                .stream()
 //                .findFirst());
+
+//        dbConn.getJdbi().useHandle(handle -> {
+//            handle.createUpdate("""
+//                        INSERT INTO games
+//                        (id, created_at, host_id, state, round_count, strings_to_use,
+//                        accidentals_to_use, tuning, start_fret, end_fret)
+//                        VALUES
+//                        (:id, :created_at, :host_id, :state, :round_count, :strings_to_use,
+//                        :accidentals_to_use, :tuning, :start_fret, :end_fret)""")
+//                    .bind("id", game.id)
+//                    .bind("created_at", game.createdAt)
+//                    .bind("host_id", game.hostId)
+//                    .bind("state", game.getState())
+//                    .bind("round_count", game.getRoundCount())
+//                    .bindArray("strings_to_use", Integer.class, game.getStringsToUse().toArray())
+//                    .bindArray("accidentals_to_use", String.class,
+//                            game.getAccidentalsToUse()
+//                                    .stream()
+//                                    .map(Accidental::toString)
+//                                    .toArray())
+//                    .bindArray("tuning", String.class, game.getTuning())
+//                    .bind("start_fret", game.getStartFret())
+//                    .bind("end_fret", game.getEndFret())
+//                    .execute();
+//
+//            if (! game.getPlayerIds().isEmpty()) {
+//                updatePlayerIds(game);
+//            }
+//        });

@@ -5,6 +5,7 @@ import org.jdbi.v3.core.statement.StatementContext;
 
 import java.sql.ResultSet;
 import java.util.Arrays;
+import java.util.HashSet;
 
 public class GameMapper implements RowMapper<Game>
 {
@@ -21,7 +22,7 @@ public class GameMapper implements RowMapper<Game>
 
             if (rs.getObject("player_ids") != null) {
                 final var playerIds = (Long[]) rs.getArray("player_ids").getArray();
-                game.setPlayerIds(Arrays.asList(playerIds));
+                game.setPlayerIds(new HashSet<>(Arrays.asList(playerIds)));
             }
 
             return game;

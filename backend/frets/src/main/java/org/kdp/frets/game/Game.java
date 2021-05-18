@@ -3,8 +3,9 @@ package org.kdp.frets.game;
 import java.sql.Time;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Game
@@ -14,7 +15,7 @@ public class Game
     public final Long hostId;
 
     private State state = State.INIT;
-    private List<Long> playerIds = new ArrayList<>();
+    private Set<Long> playerIds = new HashSet<>();
 
     private final static AtomicLong nextId = new AtomicLong(0);
 
@@ -66,12 +67,12 @@ public class Game
         }
     }
 
-    public List<Long> getPlayerIds()
+    public Set<Long> getPlayerIds()
     {
         return playerIds;
     }
 
-    public void setPlayerIds(List<Long> playerIds)
+    public void setPlayerIds(Set<Long> playerIds)
     {
         this.playerIds = playerIds;
     }

@@ -2,11 +2,8 @@ package org.kdp.frets.user;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.jboss.logging.Logger;
-import org.kdp.frets.game.GameController;
-import org.kdp.frets.game.GameDao;
 import org.kdp.frets.websocket.WebSocket;
 import org.kdp.frets.websocket.message.messages.LoginMessage;
-import org.kdp.frets.websocket.response.responses.GameUpdatedResponse;
 import org.kdp.frets.websocket.response.responses.LoginResponse;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -26,12 +23,6 @@ public class UserController
 
     @Inject
     UserDao userDao;
-
-    @Inject
-    GameDao gameDao;
-
-    @Inject
-    GameController gameController;
 
     public void loginAnonymousUser(String sessionId)
     {
@@ -76,7 +67,11 @@ public class UserController
         } catch (Exception e) {
             log.error(e.getMessage());
         }
+
     }
+
+}
+
 //        executor.submit(() -> {
 //            userDao.getBySessionId(sessionId)
 //                    .ifPresent(user -> {
@@ -90,4 +85,3 @@ public class UserController
 //                        });
 //                    });
 //        });
-}
