@@ -1,19 +1,20 @@
-DROP TABLE IF EXISTS users CASCADE;
-
-CREATE TABLE users (
-       id integer PRIMARY KEY NOT NULL,
-       name text NOT NULL,
-       session_id text UNIQUE NOT NULL,
-       game_id integer REFERENCES games(id)
-);
-
 DROP TABLE IF EXISTS games CASCADE;
 
 CREATE TABLE games (
-       id integer PRIMARY KEY,
+       id bigint PRIMARY KEY,
        created_at timestamp NOT NULL,
-       host_id integer NOT NULL,
-       state text NOT NULL
+       state text NOT NULL,
+       host_id bigint NOT NULL,
+       player_ids bigint[]
+);
+
+DROP TABLE IF EXISTS users CASCADE;
+
+CREATE TABLE users (
+       id bigint PRIMARY KEY NOT NULL,
+       name text NOT NULL,
+       session_id text UNIQUE NOT NULL,
+       game_id bigint
 );
 
 DROP TABLE IF EXISTS settings CASCADE;

@@ -5,6 +5,7 @@ import org.jdbi.v3.core.statement.StatementContext;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 public class GameMapper implements RowMapper<Game>
 {
@@ -17,7 +18,16 @@ public class GameMapper implements RowMapper<Game>
         final var hostId = rs.getLong("host_id");
         final var state = Game.State.valueOf(rs.getString("state"));
 
-        return new Game(id, createdAt, hostId, state);
+        final var game = new Game(id, createdAt, hostId, state);
+
+        if (rs.getObject("player_ids") != null) {
+            final var playerIds = (Long[]) rs.getArray("player_ids").getArray();
+            game.setPlayerIds(Arrays.asList(playerIds));
+        }
+
+        return game;
+    }
+}
 
 //        final var roundCount = rs.getInt("round_count");
 //
@@ -56,5 +66,3 @@ public class GameMapper implements RowMapper<Game>
 //        if (playerIds != null) {
 //            game.setPlayerIds(playerIds);
 //        }
-    }
-}

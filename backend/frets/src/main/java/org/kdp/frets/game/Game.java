@@ -1,12 +1,12 @@
 package org.kdp.frets.game;
 
-import org.kdp.frets.theory.Accidental;
-import org.kdp.frets.user.User;
-
+import java.sql.Time;
 import java.time.Instant;
-import java.util.HashSet;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Game
@@ -16,14 +16,7 @@ public class Game
     public final Long hostId;
 
     private State state = State.INIT;
-    private final Set<User> players = new HashSet<>();
-
-//    private int roundCount = 4;
-//    private Set<Integer> stringsToUse = Set.of(1, 2, 3, 4, 5, 6);
-//    private Set<Accidental> accidentalsToUse = Set.of(Accidental.FLAT, Accidental.NONE, Accidental.SHARP);
-//    private List<String> tuning = List.of("E5", "B4", "G4", "D4", "A3", "E3");
-//    private int startFret = 0;
-//    private int endFret = 4;
+    private List<Long> playerIds = new ArrayList<>();
 
     private final static AtomicLong nextId = new AtomicLong(0);
 
@@ -35,12 +28,12 @@ public class Game
         GAME_OVER
     }
 
-    public Game(User host)
+    public Game(Long hostId)
     {
         id = nextId.getAndIncrement();
         createdAt = Instant.now();
-        hostId = host.id;
-        addPlayer(host);
+        this.hostId = hostId;
+        addPlayerId(hostId);
     }
 
     public Game(Long id, Instant createdAt, Long hostId, State state)
@@ -50,6 +43,7 @@ public class Game
         this.hostId = hostId;
         this.state = state;
     }
+
     public State getState()
     {
         return state;
@@ -60,84 +54,49 @@ public class Game
         this.state = state;
     }
 
-    public void addPlayer(User user)
+    public void addPlayerId(Long playerId)
     {
-        players.add(user);
+        playerIds.add(playerId);
     }
 
-    public void removePlayer(User user)
+    public void removePlayerId(Long playerId)
     {
-        players.remove(user);
+        playerIds.remove(playerId);
 
-        if (players.isEmpty()) {
+        if (playerIds.isEmpty()) {
             setState(State.GAME_OVER);
         }
     }
 
-    public Set<User> getPlayers()
+    public List<Long> getPlayerIds()
     {
-        return players;
+        return playerIds;
     }
 
-//    public int getRoundCount()
-//    {
-//        return roundCount;
-//    }
-//
-//    public void setRoundCount(int roundCount)
-//    {
-//        this.roundCount = roundCount;
-//    }
-//
-//    public Set<Integer> getStringsToUse()
-//    {
-//        return stringsToUse;
-//    }
-//
-//    public void setStringsToUse(Set<Integer> stringsToUse)
-//    {
-//        this.stringsToUse = stringsToUse;
-//    }
-//
-//    public Set<Accidental> getAccidentalsToUse()
-//    {
-//        return accidentalsToUse;
-//    }
-//
-//    public void setAccidentalsToUse(Set<Accidental> accidentalsToUse)
-//    {
-//        this.accidentalsToUse = accidentalsToUse;
-//    }
+    public void setPlayerIds(List<Long> playerIds)
+    {
+        this.playerIds = playerIds;
+    }
 
-//    public List<String> getTuning()
-//    {
-//        return tuning;
-//    }
-//
-//    public void setTuning(List<String> tuning)
-//    {
-//        this.tuning = tuning;
-//    }
-//
-//    public int getStartFret()
-//    {
-//        return startFret;
-//    }
-//
-//    public void setStartFret(int startFret)
-//    {
-//        this.startFret = startFret;
-//    }
-//
-//    public int getEndFret()
-//    {
-//        return endFret;
-//    }
-//
-//    public void setEndFret(int endFret)
-//    {
-//        this.endFret = endFret;
-//    }
+    public Long getHostId()
+    {
+        return hostId;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Game game = (Game) o;
+        return id.equals(game.id) && new Time(createdAt.toEpochMilli()).equals(new Time(game.createdAt.toEpochMilli())) && hostId.equals(game.hostId) && state == game.state && playerIds.equals(game.playerIds);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(id, createdAt, hostId, state, playerIds);
+    }
 
     @Override
     public String toString()
@@ -146,10 +105,14 @@ public class Game
                 "id=" + id +
                 ", createdAt=" + createdAt +
                 ", state=" + state +
-                ", players=" + players +
-//                ", roundCount=" + roundCount +
-//                ", stringsToUse=" + stringsToUse +
-//                ", accidentalsToUse=" + accidentalsToUse +
+                ", playerIds=" + playerIds +
                 '}';
     }
 }
+
+//    private int roundCount = 4;
+//    private Set<Integer> stringsToUse = Set.of(1, 2, 3, 4, 5, 6);
+//    private Set<Accidental> accidentalsToUse = Set.of(Accidental.FLAT, Accidental.NONE, Accidental.SHARP);
+//    private List<String> tuning = List.of("E5", "B4", "G4", "D4", "A3", "E3");
+//    private int startFret = 0;
+//    private int endFret = 4;

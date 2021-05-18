@@ -1,5 +1,6 @@
 package org.kdp.frets.game;
 
+import org.jboss.logging.Logger;
 import org.jdbi.v3.core.mapper.RowMapperFactory;
 import org.jdbi.v3.core.mapper.reflect.BeanMapper;
 import org.jdbi.v3.core.mapper.reflect.ConstructorMapper;
@@ -17,37 +18,42 @@ import java.util.Optional;
 public class GameDao
 {
     @Inject
-    DatabaseConnection dbConn;
+    Logger log;
 
-//    public Optional<Game> getById(Long gameId)
-//    {
-//        return dbConn.getJdbi()
-//                .withHandle(handle -> handle
-//                        .select("SELECT * FROM games WHERE id = ?", gameId)
-//                        .mapTo(Game.class)
-//                        .findFirst());
-//    }
+    @Inject
+    DatabaseConnection dbConn;
 
     public Optional<Game> getById(Long gameId)
     {
-        return dbConn.getJdbi().withHandle(handle -> handle
-                .createQuery("""
-                    SELECT games.id g_id, created_at g_created_at, host_id g_host_id, state g_state,
-                    users.id u_id, name u_name, session_id u_session_id, game_id u_game_id
-                    FROM games
-                    JOIN users on games.id = users.game_id
-                    WHERE games.id = :id;""")
-                .bind("id", gameId)
-                .map((rs, ctx) -> {
-                    final var user = new User(
-                            rs.getLong("u_id"),
-                            rs.getString("u_name"),
-                            rs.getString("u_session_id"),
-                            rs.getLong("u_game_id"));
+        try {
+            return dbConn.getJdbi().withHandle(handle -> handle
+                    .select("SELECT * FROM games WHERE id = ?", gameId)
+                    .mapTo(Game.class)
+                    .findFirst());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        return Optional.empty();
+    }
 
-                    return new Game(new User("asdf"));
-                })
-                .findFirst());
+//        return dbConn.getJdbi().withHandle(handle -> handle
+//                .createQuery("""
+//                    SELECT games.id g_id, created_at g_created_at, host_id g_host_id, state g_state,
+//                    users.id u_id, name u_name, session_id u_session_id, game_id u_game_id
+//                    FROM games
+//                    JOIN users on games.id = users.game_id
+//                    WHERE games.id = :id;""")
+//                .bind("id", gameId)
+//                .map((rs, ctx) -> {
+//                    final var user = new User(
+//                            rs.getLong("u_id"),
+//                            rs.getString("u_name"),
+//                            rs.getString("u_session_id"),
+//                            rs.getLong("u_game_id"));
+//
+//                    return new Game(new User("asdf"));
+//                })
+//                .findFirst());
 
 //                .registerRowMapper(BeanMapper.factory(Game.class, "g"))
 //                .registerRowMapper(BeanMapper.factory(User.class, "u"))
@@ -63,7 +69,6 @@ public class GameDao
 //                .values()
 //                .stream()
 //                .findFirst());
-    }
 
     public List<Game> getAll()
     {
@@ -87,13 +92,14 @@ public class GameDao
     {
         try {
             dbConn.getJdbi().useHandle(handle -> {
-                handle.createUpdate("""
-                        INSERT INTO games (id, created_at, host_id, state)
-                        VALUES (:id, :created_at, :host_id, :state)""")
+                final var update = handle.createUpdate("""
+                        INSERT INTO games (id, created_at, host_id, state, player_ids)
+                        VALUES (:id, :created_at, :host_id, :state, :player_ids)""")
                         .bind("id", game.id)
                         .bind("created_at", game.createdAt)
                         .bind("host_id", game.hostId)
                         .bind("state", game.getState())
+                        .bindArray("player_ids", Long.class, game.getPlayerIds().toArray())
                         .execute();
             });
         } catch (Exception e) {

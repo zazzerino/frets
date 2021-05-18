@@ -21,6 +21,13 @@ public class User
         this.sessionId = sessionId;
     }
 
+    public User(Long id, String name, String sessionId)
+    {
+        this.id = id;
+        this.name = name;
+        this.sessionId = sessionId;
+    }
+
     public User(Long id, String name, String sessionId, Long gameId)
     {
         this.id = id;

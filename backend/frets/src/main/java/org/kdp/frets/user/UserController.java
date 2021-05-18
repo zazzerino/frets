@@ -56,6 +56,14 @@ public class UserController
 
     public void sessionClosed(String sessionId)
     {
+        try {
+            executor.submit(() -> {
+                userDao.deleteBySessionId(sessionId);
+            });
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+
 //        executor.submit(() -> {
 //            userDao.getBySessionId(sessionId)
 //                    .ifPresent(user -> {

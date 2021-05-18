@@ -33,42 +33,42 @@ public class GameController
 
     public void broadcastGames()
     {
-        executor.submit(() -> {
-            log.info("broadcasting games...");
-            final var games = gameDao.getAllByNewest();
-            webSocket.broadcast(new GamesResponse(games));
-        });
+//        executor.submit(() -> {
+//            log.info("broadcasting games...");
+//            final var games = gameDao.getAllByNewest();
+//            webSocket.broadcast(new GamesResponse(games));
+//        });
     }
 
     public void sendGamesToSessionId(String sessionId)
     {
-        executor.submit(() -> {
-            log.info("sending games to session: " + sessionId);
-            final var games = gameDao.getAllByNewest();
-            webSocket.sendToSessionId(sessionId, new GamesResponse(games));
-        });
+//        executor.submit(() -> {
+//            log.info("sending games to session: " + sessionId);
+//            final var games = gameDao.getAllByNewest();
+//            webSocket.sendToSessionId(sessionId, new GamesResponse(games));
+//        });
     }
 
     public void notifyPlayers(Long gameId, Response response)
     {
-        executor.submit(() -> {
-            final var game = gameDao.getById(gameId).orElseThrow();
-            final var sessionIds = gameDao.getSessionIds(game);
-            webSocket.sendToSessionIds(sessionIds, response);
-        });
+//        executor.submit(() -> {
+//            final var game = gameDao.getById(gameId).orElseThrow();
+//            final var sessionIds = gameDao.getSessionIds(game);
+//            webSocket.sendToSessionIds(sessionIds, response);
+//        });
     }
 
     public void createGame(String sessionId)
     {
         executor.submit(() -> {
             final var user = userDao.getBySessionId(sessionId).orElseThrow();
-            final var game = new Game(user);
+            final var game = new Game(user.id);
             log.info("creating game: " + game);
 
-            user.setGameId(game.id);
-            userDao.updateGameId(user);
+//            user.setGameId(game.id);
+//            userDao.updateGameId(user);
 
-            gameDao.create(game);
+//            gameDao.create(game);
 //            webSocket.sendToSessionId(sessionId, new JoinGameResponse(game));
 //            broadcastGames();
         });
@@ -94,18 +94,18 @@ public class GameController
     @Scheduled(every = "5m")
     public void cleanupFinishedGames()
     {
-        executor.submit(() -> {
-            gameDao.getAll().forEach(game -> {
-                final var isOver = game.getState() == Game.State.GAME_OVER;
-                final var isOld = game.createdAt.isBefore(
-                        Instant.now().minus(5, ChronoUnit.MINUTES));
-
-                if (isOver && isOld) {
-                    log.info("deleting game: " + game);
-                    gameDao.delete(game);
-                    broadcastGames();
-                }
-            });
-        });
+//        executor.submit(() -> {
+//            gameDao.getAll().forEach(game -> {
+//                final var isOver = game.getState() == Game.State.GAME_OVER;
+//                final var isOld = game.createdAt.isBefore(
+//                        Instant.now().minus(5, ChronoUnit.MINUTES));
+//
+//                if (isOver && isOld) {
+//                    log.info("deleting game: " + game);
+//                    gameDao.delete(game);
+//                    broadcastGames();
+//                }
+//            });
+//        });
     }
 }

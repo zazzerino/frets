@@ -43,8 +43,7 @@ public class UserDao
     public void create(User user)
     {
         dbConn.getJdbi().useHandle(handle -> {
-            handle.execute(
-                    """
+            handle.execute("""
                     INSERT INTO users (id, name, session_id, game_id)
                     VALUES (?, ?, ?, ?)""",
                     user.id,
@@ -54,12 +53,12 @@ public class UserDao
         });
     }
 
-//    public void deleteById(Long id)
-//    {
-//        dbConn.getJdbi().useHandle(handle -> {
-//            handle.execute("DELETE FROM users WHERE id = ?", id);
-//        });
-//    }
+    public void deleteById(Long id)
+    {
+        dbConn.getJdbi().useHandle(handle -> {
+            handle.execute("DELETE FROM users WHERE id = ?", id);
+        });
+    }
 
     public void deleteBySessionId(String sessionId)
     {
@@ -71,14 +70,18 @@ public class UserDao
     public void updateName(User user)
     {
         dbConn.getJdbi().useHandle(handle -> {
-            handle.execute("UPDATE users SET name = ? WHERE id = ?", user.getName(), user.id);
+            handle.execute("UPDATE users SET name = ? WHERE id = ?",
+                    user.getName(),
+                    user.id);
         });
     }
 
     public void updateGameId(User user)
     {
         dbConn.getJdbi().useHandle(handle -> {
-            handle.execute("UPDATE users SET game_id = ? WHERE id = ?", user.getGameId(), user.id);
+            handle.execute("UPDATE users SET game_id = ? WHERE id = ?",
+                    user.getGameId(),
+                    user.id);
         });
     }
 }
