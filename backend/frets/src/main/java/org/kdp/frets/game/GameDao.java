@@ -25,6 +25,13 @@ public class GameDao
                 .findFirst());
     }
 
+    public Optional<Game> getByUserSessionId(String sessionId)
+    {
+        return Optional.empty();
+    }
+
+//    select users.session_id from games join users on games.id = users.game_id where users.id = 2;
+//    select users.id, name, session_id, game_id from users join games on games.id = users.game_id where users.id = 0;
 
     public List<Game> getAll()
     {
@@ -59,7 +66,7 @@ public class GameDao
                         .execute();
             });
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getStackTrace());
         }
 
     }
@@ -85,7 +92,7 @@ public class GameDao
                         .execute();
             });
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error(e.getStackTrace());
         }
     }
 

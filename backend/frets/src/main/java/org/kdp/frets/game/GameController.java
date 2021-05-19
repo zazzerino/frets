@@ -85,6 +85,26 @@ public class GameController
         }
     }
 
+    public void sessionClosed(String sessionId)
+    {
+        try {
+            userDao.getBySessionId(sessionId)
+                    .ifPresent(user -> {
+                        if (user.getGameId() != null) {
+                            final var game = gameDao
+                                    .getById(user.getGameId())
+                                    .orElseThrow();
+
+                            game.removePlayerId(user.id);
+                            gameDao.updatePlayerIdsAndState(game);
+                            broadcastGames();
+                        }
+                    });
+        } catch (Exception e) {
+            log.error(e.getStackTrace());
+        }
+    }
+
     public void addUserToGame(Long gameId, Long userId)
     {
 //        executor.submit(() -> {

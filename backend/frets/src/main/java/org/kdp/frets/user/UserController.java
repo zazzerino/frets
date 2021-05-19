@@ -28,9 +28,9 @@ public class UserController
     {
         executor.submit(() -> {
             final var user = new User(sessionId);
-            log.info("saving user: " + user);
             userDao.create(user);
             webSocket.sendToSessionId(sessionId, new LoginResponse(user));
+            log.info("saving user: " + user);
         });
     }
 
@@ -39,9 +39,9 @@ public class UserController
         executor.submit(() -> {
             final var user = userDao.getBySessionId(sessionId).orElseThrow();
             user.setName(message.name);
-            log.info("user logged in: " + user);
             userDao.updateName(user);
             webSocket.sendToSessionId(sessionId, new LoginResponse(user));
+            log.info("user logged in: " + user);
         });
     }
 
@@ -50,7 +50,7 @@ public class UserController
         try {
             executor.submit(() -> {
                 final var user = userDao.getBySessionId(sessionId).orElseThrow();
-                final var gameId = user.getGameId();
+//                final var gameId = user.getGameId();
 
 //                if (gameId != null) {
 ////                    gameDao.updatePlayerIdsAndState(game);
@@ -65,7 +65,7 @@ public class UserController
                 userDao.delete(user);
             });
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error(e.getStackTrace());
         }
 
     }

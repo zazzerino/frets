@@ -2,7 +2,6 @@ package org.kdp.frets.game;
 
 import java.sql.Time;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;

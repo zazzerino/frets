@@ -5,8 +5,7 @@ import org.kdp.frets.game.GameController;
 import org.kdp.frets.user.UserController;
 import org.kdp.frets.websocket.message.*;
 import org.kdp.frets.websocket.message.messages.*;
-import org.kdp.frets.websocket.response.Response;
-import org.kdp.frets.websocket.response.ResponseEncoder;
+import org.kdp.frets.websocket.response.*;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -50,6 +49,7 @@ public class WebSocket
         log.info("removing session: " + session.getId());
         sessions.remove(session.getId());
         userController.sessionClosed(session.getId());
+        gameController.sessionClosed(session.getId());
     }
 
     @OnMessage
