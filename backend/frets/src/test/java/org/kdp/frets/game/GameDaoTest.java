@@ -85,6 +85,7 @@ public class GameDaoTest
 
         game.removePlayerId(user1.id);
         gameDao.updatePlayerIdsAndState(game);
+
         assertEquals(
                 1,
                 gameDao.getById(game.id).orElseThrow().getPlayerIds().size());

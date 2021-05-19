@@ -19,7 +19,6 @@ public class LifecycleObserver
     DatabaseConnection dbConn;
 
     void onStart(@Observes StartupEvent event)
-            throws IOException
     {
         log.info("setting up database");
         setupDatabase();
@@ -31,12 +30,15 @@ public class LifecycleObserver
     }
 
     private void setupDatabase()
-            throws IOException
     {
-        final var importSql = Util.getResourceFileAsString("import.sql");
+        try {
+            final var importSql = Util.getResourceFileAsString("import.sql");
 
-        dbConn.getJdbi().useHandle(handle -> {
-            handle.execute(importSql);
-        });
+            dbConn.getJdbi().useHandle(handle -> {
+                handle.execute(importSql);
+            });
+        } catch (IOException e) {
+            log.error(e.getStackTrace());
+        }
     }
 }

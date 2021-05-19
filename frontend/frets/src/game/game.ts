@@ -5,10 +5,10 @@ export interface Game {
   createdAt: string;
   hostId: number;
   state: State;
-  roundCount: number;
-  stringsToUse: number[];
-  accidentalsToUse: string[];
   playerIds: number[];
+  // roundCount: number;
+  // stringsToUse: number[];
+  // accidentalsToUse: string[];
 }
 
 export function playerCount(game: Game): number {

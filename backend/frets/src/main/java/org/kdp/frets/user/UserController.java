@@ -47,41 +47,9 @@ public class UserController
 
     public void sessionClosed(String sessionId)
     {
-        try {
-            executor.submit(() -> {
-                final var user = userDao.getBySessionId(sessionId).orElseThrow();
-//                final var gameId = user.getGameId();
-
-//                if (gameId != null) {
-////                    gameDao.updatePlayerIdsAndState(game);
-////
-//                    user.setGameId(null);
-//                    userDao.updateGameId(user);
-////
-////                    gameController.notifyPlayers(game.id, new GameUpdatedResponse(game));
-////                    gameController.broadcastGames();
-//                }
-
-                userDao.delete(user);
-            });
-        } catch (Exception e) {
-            log.error(e.getStackTrace());
-        }
-
+        executor.submit(() -> {
+            final var user = userDao.getBySessionId(sessionId).orElseThrow();
+            userDao.delete(user);
+        });
     }
-
 }
-
-//        executor.submit(() -> {
-//            userDao.getBySessionId(sessionId)
-//                    .ifPresent(user -> {
-//                        log.info("deleting user: " + user);
-//                        userDao.deleteBySessionId(sessionId);
-//                        gameDao.getUserGames(user.id).forEach(game -> {
-//                            game.removePlayerId(user.id);
-//                            gameDao.updatePlayerIds(game);
-//                            gameController.notifyPlayers(game.id, new GameUpdatedResponse(game));
-//                            gameController.broadcastGames();
-//                        });
-//                    });
-//        });

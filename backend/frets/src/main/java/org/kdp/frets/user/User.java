@@ -8,7 +8,7 @@ public class User
     public final Long id;
     public final String sessionId;
 
-    private String name;
+    private String name = DEFAULT_NAME;
     private Long gameId;
 
     public static final String DEFAULT_NAME = "anon";
@@ -17,7 +17,6 @@ public class User
     public User(String sessionId)
     {
         id = nextId.getAndIncrement();
-        name = DEFAULT_NAME;
         this.sessionId = sessionId;
     }
 

@@ -60,13 +60,6 @@ public class UserDao
         });
     }
 
-//    public void deleteBySessionId(String sessionId)
-//    {
-//        dbConn.getJdbi().useHandle(handle -> {
-//            handle.execute("DELETE FROM users WHERE session_id = ?", sessionId);
-//        });
-//    }
-
     public void updateName(User user)
     {
         dbConn.getJdbi().useHandle(handle -> {
