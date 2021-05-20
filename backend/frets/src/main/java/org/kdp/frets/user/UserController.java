@@ -26,30 +26,41 @@ public class UserController
 
     public void loginAnonymousUser(String sessionId)
     {
-        executor.submit(() -> {
-            final var user = new User(sessionId);
-            userDao.create(user);
-            webSocket.sendToSessionId(sessionId, new LoginResponse(user));
-            log.info("saving user: " + user);
-        });
+        try {
+            executor.submit(() -> {
+                final var user = new User(sessionId);
+                userDao.create(user);
+                webSocket.sendToSessionId(sessionId, new LoginResponse(user));
+                log.info("saving user: " + user);
+            });
+        } catch (Exception e) {
+            log.error(e.getStackTrace());
+        }
     }
 
     public void login(String sessionId, LoginMessage message)
     {
-        executor.submit(() -> {
-            final var user = userDao.getBySessionId(sessionId).orElseThrow();
-            user.setName(message.name);
-            userDao.updateName(user);
-            webSocket.sendToSessionId(sessionId, new LoginResponse(user));
-            log.info("user logged in: " + user);
-        });
+        try {
+            executor.submit(() -> {
+                final var user = userDao.getBySessionId(sessionId).orElseThrow();
+                user.setName(message.name);
+                userDao.updateName(user);
+                webSocket.sendToSessionId(sessionId, new LoginResponse(user));
+                log.info("user logged in: " + user);
+            });
+        } catch (Exception e) {
+            log.error(e.getStackTrace());
+        }
     }
 
-    public void sessionClosed(String sessionId)
+    public void sessionClosed(User user)
     {
-        executor.submit(() -> {
-            final var user = userDao.getBySessionId(sessionId).orElseThrow();
-            userDao.delete(user);
-        });
+        try {
+            executor.submit(() -> {
+                userDao.delete(user);
+            });
+        } catch (Exception e) {
+            log.error(e.getStackTrace());
+        }
     }
 }

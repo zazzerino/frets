@@ -3,6 +3,7 @@ package org.kdp.frets.websocket;
 import org.jboss.logging.Logger;
 import org.kdp.frets.game.GameController;
 import org.kdp.frets.user.UserController;
+import org.kdp.frets.user.UserDao;
 import org.kdp.frets.websocket.message.*;
 import org.kdp.frets.websocket.message.messages.*;
 import org.kdp.frets.websocket.response.*;
@@ -17,14 +18,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @ServerEndpoint(
         value = "/ws",
-        decoders = {MessageDecoder.class},
-        encoders = {ResponseEncoder.class}
+        decoders = { MessageDecoder.class },
+        encoders = { ResponseEncoder.class }
 )
 @ApplicationScoped
 public class WebSocket
 {
-    private final Map<String, Session> sessions = new ConcurrentHashMap<>();
-
     @Inject
     Logger log;
 
@@ -34,22 +33,32 @@ public class WebSocket
     @Inject
     GameController gameController;
 
+    @Inject
+    UserDao userDao;
+
+    private final Map<String, Session> sessions = new ConcurrentHashMap<>();
+
     @OnOpen
     public void onOpen(Session session)
     {
-        log.info("new session: " + session.getId());
-        sessions.put(session.getId(), session);
-        userController.loginAnonymousUser(session.getId());
-        gameController.sendGamesToSessionId(session.getId());
+        final var sessionId = session.getId();
+        log.info("new session: " + sessionId);
+
+        sessions.put(sessionId, session);
+        userController.loginAnonymousUser(sessionId);
+        gameController.sendGamesToSessionId(sessionId);
     }
 
     @OnClose
     public void onClose(Session session)
     {
-        log.info("removing session: " + session.getId());
-        sessions.remove(session.getId());
-        userController.sessionClosed(session.getId());
-        gameController.sessionClosed(session.getId());
+        final var sessionId = session.getId();
+        log.info("removing session: " + sessionId);
+        sessions.remove(sessionId);
+
+        final var user = userDao.getBySessionId(sessionId).orElseThrow();
+        userController.sessionClosed(user);
+        gameController.removeUserFromCurrentGame(user);
     }
 
     @OnMessage

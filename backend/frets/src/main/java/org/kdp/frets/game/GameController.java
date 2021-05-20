@@ -1,8 +1,8 @@
 package org.kdp.frets.game;
 
-import io.quarkus.scheduler.Scheduled;
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.jboss.logging.Logger;
+import org.kdp.frets.user.User;
 import org.kdp.frets.user.UserDao;
 import org.kdp.frets.websocket.WebSocket;
 import org.kdp.frets.websocket.response.Response;
@@ -29,6 +29,9 @@ public class GameController
     @Inject
     GameDao gameDao;
 
+    /**
+     * Sends info about each game to every connected client.
+     */
     public void broadcastGames()
     {
         try {
@@ -42,6 +45,9 @@ public class GameController
         }
     }
 
+    /**
+     * Sends info about each game to the given session.
+     */
     public void sendGamesToSessionId(String sessionId)
     {
         try {
@@ -55,6 +61,9 @@ public class GameController
         }
     }
 
+    /**
+     * Send a response to each player of the specified game.
+     */
     public void notifyPlayers(Long gameId, Response response)
     {
         try {
@@ -68,22 +77,19 @@ public class GameController
         }
     }
 
+    /**
+     * Creates a new game, adds the user to it as host, and then broadcasts the new game info to each client.
+     */
     public void createGame(String sessionId)
     {
         try {
             executor.submit(() -> {
                 final var user = userDao.getBySessionId(sessionId).orElseThrow();
+                removeUserFromCurrentGame(user);
+
                 final var game = new Game(user.id);
                 log.info("creating game: " + game);
                 gameDao.create(game);
-
-                if (user.getGameId() != null) {
-                    final var oldGame = gameDao.getById(user.getGameId()).orElseThrow();
-                    log.info("found old game: " + oldGame);
-                    oldGame.removePlayerId(user.id);
-                    gameDao.updatePlayerIdsAndState(oldGame);
-                    log.info("removed players from: " + oldGame);
-                }
 
                 user.setGameId(game.id);
                 userDao.updateGameId(user);
@@ -96,23 +102,20 @@ public class GameController
         }
     }
 
-    public void sessionClosed(String sessionId)
+    public void removeUserFromCurrentGame(User user)
     {
         try {
-            userDao.getBySessionId(sessionId)
-                    .ifPresent(user -> {
-                        if (user.getGameId() != null) {
-                            final var game = gameDao
-                                    .getById(user.getGameId())
-                                    .orElseThrow();
+            executor.submit(() -> {
+                if (user.getGameId() != null) {
+                    final var game = gameDao.getById(user.getGameId()).orElseThrow();
 
-                            game.removePlayerId(user.id);
-                            gameDao.updatePlayerIdsAndState(game);
+                    game.removePlayerId(user.id);
+                    gameDao.updatePlayerIdsAndState(game);
 
-                            notifyPlayers(game.id, new GameUpdatedResponse(game));
-                            broadcastGames();
-                        }
-                    });
+                    notifyPlayers(game.id, new GameUpdatedResponse(game));
+                    broadcastGames();
+                }
+            });
         } catch (Exception e) {
             log.error(e.getStackTrace());
         }
@@ -122,39 +125,33 @@ public class GameController
     {
         try {
             executor.submit(() -> {
-//                final var game = gameDao.getById(gameId).orElseThrow();
-//                game.addPlayerId(userId);
-//                gameDao.updatePlayerIdsAndState(game);
-//                log.info("added player to " + game);
-//
-//                final var user = userDao.getById(userId).orElseThrow();
-//
-//                gameDao.getById(user.id).ifPresent(oldGame -> {
-//                    log.info("found old game: " + oldGame);
-//                    oldGame.removePlayerId(user.id);
-//                    gameDao.updatePlayerIdsAndState(oldGame);
-//                });
-//
-//                user.setGameId(game.id);
-//                userDao.updateGameId(user);
-//
-//                broadcastGames();
-//                notifyPlayers(game.id, new JoinGameResponse(game));
+                final var game = gameDao.getById(gameId).orElseThrow();
+                game.addPlayerId(userId);
+                gameDao.updatePlayerIdsAndState(game);
+                log.info("added player to " + game);
+
+                final var user = userDao.getById(userId).orElseThrow();
+
+                gameDao.getById(user.id).ifPresent(oldGame -> {
+                    log.info("found old game: " + oldGame);
+                    oldGame.removePlayerId(user.id);
+                    gameDao.updatePlayerIdsAndState(oldGame);
+                });
+
+                user.setGameId(game.id);
+                userDao.updateGameId(user);
+
+                broadcastGames();
+                notifyPlayers(game.id, new JoinGameResponse(game));
             });
         } catch (Exception e) {
             log.error(e.getStackTrace());
         }
     }
 
-//    @Scheduled(every = "10s")
-//    public void broadcastGameUpdates()
+//    @Scheduled(every = "5m")
+//    public void cleanupFinishedGames()
 //    {
-//        broadcastGames();
-//    }
-
-    @Scheduled(every = "5m")
-    public void cleanupFinishedGames()
-    {
 //        executor.submit(() -> {
 //            gameDao.getAll().forEach(game -> {
 //                final var isOver = game.getState() == Game.State.GAME_OVER;
@@ -168,5 +165,5 @@ public class GameController
 //                }
 //            });
 //        });
-    }
+//    }
 }
