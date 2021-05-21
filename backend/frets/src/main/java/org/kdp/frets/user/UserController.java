@@ -26,41 +26,29 @@ public class UserController
 
     public void loginAnonymousUser(String sessionId)
     {
-        try {
-            executor.submit(() -> {
-                final var user = new User(sessionId);
-                userDao.create(user);
-                webSocket.sendToSessionId(sessionId, new LoginResponse(user));
-                log.info("saving user: " + user);
-            });
-        } catch (Exception e) {
-            log.error(e.getStackTrace());
-        }
+        executor.submit(() -> {
+            final var user = new User(sessionId);
+            log.info("saving user: " + user);
+            userDao.create(user);
+            webSocket.sendToSessionId(sessionId, new LoginResponse(user));
+        });
     }
 
     public void login(String sessionId, LoginMessage message)
     {
-        try {
-            executor.submit(() -> {
-                final var user = userDao.getBySessionId(sessionId).orElseThrow();
-                user.setName(message.name);
-                userDao.updateName(user);
-                webSocket.sendToSessionId(sessionId, new LoginResponse(user));
-                log.info("user logged in: " + user);
-            });
-        } catch (Exception e) {
-            log.error(e.getStackTrace());
-        }
+        executor.submit(() -> {
+            final var user = userDao.getBySessionId(sessionId).orElseThrow();
+            user.setName(message.name);
+            userDao.updateName(user);
+            log.info("user logged in: " + user);
+            webSocket.sendToSessionId(sessionId, new LoginResponse(user));
+        });
     }
 
     public void sessionClosed(User user)
     {
-        try {
-            executor.submit(() -> {
-                userDao.delete(user);
-            });
-        } catch (Exception e) {
-            log.error(e.getStackTrace());
-        }
+        executor.submit(() -> {
+            userDao.delete(user);
+        });
     }
 }

@@ -25,10 +25,10 @@ public class GameDao
                 .findFirst());
     }
 
-    public Optional<Game> getByUserSessionId(String sessionId)
-    {
-        return Optional.empty();
-    }
+//    public Optional<Game> getByUserSessionId(String sessionId)
+//    {
+//        return Optional.empty();
+//    }
 
 //    select users.session_id from games join users on games.id = users.game_id where users.id = 2;
 //    select users.id, name, session_id, game_id from users join games on games.id = users.game_id where users.id = 0;
@@ -127,66 +127,3 @@ public class GameDao
                         .list());
     }
 }
-
-//        return dbConn.getJdbi().withHandle(handle -> handle
-//                .createQuery("""
-//                    SELECT games.id g_id, created_at g_created_at, host_id g_host_id, state g_state,
-//                    users.id u_id, name u_name, session_id u_session_id, game_id u_game_id
-//                    FROM games
-//                    JOIN users on games.id = users.game_id
-//                    WHERE games.id = :id;""")
-//                .bind("id", gameId)
-//                .map((rs, ctx) -> {
-//                    final var user = new User(
-//                            rs.getLong("u_id"),
-//                            rs.getString("u_name"),
-//                            rs.getString("u_session_id"),
-//                            rs.getLong("u_game_id"));
-//
-//                    return new Game(new User("asdf"));
-//                })
-//                .findFirst());
-
-//                .registerRowMapper(BeanMapper.factory(Game.class, "g"))
-//                .registerRowMapper(BeanMapper.factory(User.class, "u"))
-//                .reduceRows(new LinkedHashMap<Long, Game>(), (map, rowView) -> {
-//                    final var game = map.computeIfAbsent(
-//                            rowView.getColumn("g_id", Long.class),
-//                            _id -> rowView.getRow(Game.class));
-//                    if (rowView.getColumn("u_id", Long.class) != null) {
-//                        game.addPlayer(rowView.getRow(User.class));
-//                    }
-//                    return map;
-//                })
-//                .values()
-//                .stream()
-//                .findFirst());
-
-//        dbConn.getJdbi().useHandle(handle -> {
-//            handle.createUpdate("""
-//                        INSERT INTO games
-//                        (id, created_at, host_id, state, round_count, strings_to_use,
-//                        accidentals_to_use, tuning, start_fret, end_fret)
-//                        VALUES
-//                        (:id, :created_at, :host_id, :state, :round_count, :strings_to_use,
-//                        :accidentals_to_use, :tuning, :start_fret, :end_fret)""")
-//                    .bind("id", game.id)
-//                    .bind("created_at", game.createdAt)
-//                    .bind("host_id", game.hostId)
-//                    .bind("state", game.getState())
-//                    .bind("round_count", game.getRoundCount())
-//                    .bindArray("strings_to_use", Integer.class, game.getStringsToUse().toArray())
-//                    .bindArray("accidentals_to_use", String.class,
-//                            game.getAccidentalsToUse()
-//                                    .stream()
-//                                    .map(Accidental::toString)
-//                                    .toArray())
-//                    .bindArray("tuning", String.class, game.getTuning())
-//                    .bind("start_fret", game.getStartFret())
-//                    .bind("end_fret", game.getEndFret())
-//                    .execute();
-//
-//            if (! game.getPlayerIds().isEmpty()) {
-//                updatePlayerIds(game);
-//            }
-//        });
