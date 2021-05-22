@@ -2,6 +2,7 @@ package org.kdp.frets.game;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
+import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Test;
 import org.kdp.frets.user.User;
 import org.kdp.frets.user.UserDao;
@@ -13,6 +14,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @QuarkusTest
 public class GameDaoTest
 {
+    @Inject
+    Logger log;
+
     @Inject
     GameDao gameDao;
 
@@ -33,30 +37,39 @@ public class GameDaoTest
         assertEquals(1, gameDao.getAll().size());
     }
 
-//    @Test
-//    @TestTransaction
-//    public void testDeleteGame()
-//    {
-//        final var user = new User("s0");
-//        final var game = new Game(user);
-//        gameDao.create(game);
-//        assertEquals(1, gameDao.getAll().size());
-//        gameDao.delete(game);
-//        assertTrue(gameDao.getAll().isEmpty());
-//    }
-//
-//    @Test
-//    @TestTransaction
-//    public void testGetByIdAndEquals()
-//    {
-//        final var user = new User("s0");
-//        final var game = new Game(user);
-//        gameDao.create(game);
-//
-//        final var foundGame = gameDao.getById(game.id).orElseThrow();
-//        assertEquals(game, foundGame);
-//    }
-//
+    @Test
+    @TestTransaction
+    public void testDeleteGame()
+    {
+        final var user = new User("s0");
+        final var game = new Game(user);
+
+        gameDao.create(game);
+        assertEquals(1, gameDao.getAll().size());
+
+        gameDao.delete(game);
+        assertTrue(gameDao.getAll().isEmpty());
+    }
+
+    @Test
+    @TestTransaction
+    public void testGetByIdAndEquals()
+    {
+        final var user = new User("s0");
+        userDao.create(user);
+
+        final var game = new Game(user);
+        log.info("game: " + game);
+
+        gameDao.create(game);
+        user.setGameId(game.id);
+        userDao.updateGameId(user);
+
+        final var foundGame = gameDao.getById(game.id).orElseThrow();
+        log.info("found game: " + foundGame);
+        assertEquals(game, foundGame);
+    }
+
 //    @Test
 //    @TestTransaction
 //    public void testGetAllNewest()

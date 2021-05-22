@@ -2,11 +2,13 @@ package org.kdp.frets.game;
 
 import org.jboss.logging.Logger;
 import org.kdp.frets.DatabaseConnection;
+import org.kdp.frets.user.User;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class GameDao
@@ -19,16 +21,22 @@ public class GameDao
 
     public Optional<Game> getById(Long gameId)
     {
-        return dbConn.getJdbi().withHandle(handle -> handle
-                .select("SELECT * FROM games WHERE id = ?", gameId)
-                .mapTo(Game.class)
-                .findFirst());
-    }
+        try (final var handle = dbConn.getJdbi().open()) {
+            final var game = handle
+                    .select("SELECT * FROM games WHERE id = ?", gameId)
+                    .mapTo(Game.class)
+                    .findOne();
 
-//    public Optional<Game> getByUserSessionId(String sessionId)
-//    {
-//        return Optional.empty();
-//    }
+            final var users = handle
+                    .select("SELECT * FROM users WHERE game_id = ?", gameId)
+                    .mapTo(User.class)
+                    .collect(Collectors.toSet());
+
+            game.ifPresent(g -> g.setUsers(users));
+
+            return game;
+        }
+    }
 
 //    select users.session_id from games join users on games.id = users.game_id where users.id = 2;
 //    select users.id, name, session_id, game_id from users join games on games.id = users.game_id where users.id = 0;
