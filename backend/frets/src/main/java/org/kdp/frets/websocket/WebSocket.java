@@ -58,7 +58,7 @@ public class WebSocket
 
         final var user = userDao.getBySessionId(sessionId).orElseThrow();
         userController.sessionClosed(user);
-        gameController.removeUserFromCurrentGame(user);
+        gameController.removeFromCurrentGame(user);
     }
 
     @OnMessage

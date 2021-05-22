@@ -7,7 +7,6 @@ import org.kdp.frets.user.UserDao;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -141,16 +140,6 @@ public class GameDao
         }
         return null;
     }
-
-//    public List<User> getPlayers(Game game)
-//    {
-//        return dbConn.getJdbi()
-//                .withHandle(handle -> handle
-//                        .select("SELECT * FROM users WHERE id in (<player_ids>)")
-//                        .bindList("player_ids", game.getPlayerIds())
-//                        .mapTo(User.class)
-//                        .list());
-//    }
 
 //    public List<Game> getUserGames(Long userId)
 //    {

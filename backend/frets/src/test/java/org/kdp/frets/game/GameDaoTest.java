@@ -96,7 +96,7 @@ public class GameDaoTest
     public void testAddAndRemovePlayerId()
     {
         final var user0 = new User("s0");
-//        final var user1 = new User("s1");
+        userDao.create(user0);
 
         final var game = new Game(user0);
         gameDao.create(game);
@@ -109,37 +109,41 @@ public class GameDaoTest
         final var found = gameDao.getById(game.id).orElseThrow();
         log.info("found: " + found);
 
-//        assertEquals(
-//                1,
-//                gameDao.getById(game.id).orElseThrow().getUsers().size());
+        assertEquals(1, gameDao.getById(game.id).orElseThrow().getUsers().size());
 
-//        game.addUser(user1);
-//        gameDao.updatePlayerIdsAndState(game);
-//
-//        assertEquals(
-//                2,
-//                gameDao.getById(game.id).orElseThrow().getUsers().size());
-//
-//        game.removeUser(user1);
-//        gameDao.updatePlayerIdsAndState(game);
-//
-//        assertEquals(
-//                1,
-//                gameDao.getById(game.id).orElseThrow().getUsers().size());
-//
-//        game.removeUser(user0);
-//        gameDao.updatePlayerIdsAndState(game);
-//
-//        assertTrue(gameDao
-//                .getById(game.id)
-//                .orElseThrow()
-//                .getUsers()
-//                .isEmpty());
-//
-//        assertEquals(
-//                Game.State.GAME_OVER,
-//                gameDao.getById(game.id)
-//                        .orElseThrow()
-//                        .getState());
+        final var user1 = new User("s1");
+        user1.setGameId(game.id);
+        userDao.create(user1);
+
+        game.addUser(user1);
+        gameDao.update(game);
+
+        assertEquals(2, gameDao.getById(game.id).orElseThrow().getUsers().size());
+
+        user1.setGameId(null);
+        userDao.update(user1);
+
+        game.removeUser(user1);
+        gameDao.update(game);
+
+        assertEquals(1, gameDao.getById(game.id).orElseThrow().getUsers().size());
+
+        user0.setGameId(null);
+        userDao.update(user0);
+
+        game.removeUser(user0);
+        gameDao.update(game);
+
+        assertTrue(gameDao
+                .getById(game.id)
+                .orElseThrow()
+                .getUsers()
+                .isEmpty());
+
+        assertEquals(
+                Game.State.GAME_OVER,
+                gameDao.getById(game.id)
+                        .orElseThrow()
+                        .getState());
     }
 }

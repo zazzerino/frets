@@ -85,7 +85,7 @@ public class GameController
         executor.submit(() -> {
             try {
                 final var user = userDao.getBySessionId(sessionId).orElseThrow();
-                removeUserFromCurrentGame(user);
+                removeFromCurrentGame(user);
 
                 final var game = new Game(user);
                 log.info("creating game: " + game);
@@ -102,7 +102,7 @@ public class GameController
         });
     }
 
-    public void removeUserFromCurrentGame(User user)
+    public void removeFromCurrentGame(User user)
     {
         executor.submit(() -> {
             try {
@@ -129,11 +129,11 @@ public class GameController
         executor.submit(() -> {
             try {
                 final var user = userDao.getById(userId).orElseThrow();
-                removeUserFromCurrentGame(user);
+                removeFromCurrentGame(user);
 
                 final var game = gameDao.getById(gameId).orElseThrow();
                 game.addUser(user);
-//                gameDao.updatePlayerIdsAndState(game);
+                gameDao.update(game);
 
                 user.setGameId(game.id);
                 userDao.update(user);
