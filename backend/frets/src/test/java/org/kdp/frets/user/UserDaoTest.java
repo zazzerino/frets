@@ -14,9 +14,6 @@ public class UserDaoTest
     @Inject
     UserDao userDao;
 
-//    @Inject
-//    GameDao gameDao;
-
     @Test
     @TestTransaction
     public void testCreateAndFindUser()

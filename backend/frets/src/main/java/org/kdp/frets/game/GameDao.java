@@ -43,20 +43,56 @@ public class GameDao
 
     public List<Game> getAll()
     {
-        return dbConn.getJdbi()
-                .withHandle(handle -> handle
-                        .select("SELECT * FROM games")
-                        .mapTo(Game.class)
-                        .list());
+        try (final var handle = dbConn.getJdbi().open()) {
+            final var games = handle
+                    .select("SELECT * FROM games")
+                    .mapTo(Game.class)
+                    .list();
+
+            games.forEach(game -> {
+                final var users = handle
+                        .select("SELECT * FROM users WHERE game_id = ?", game.id)
+                        .mapTo(User.class)
+                        .collect(Collectors.toSet());
+
+                game.setUsers(users);
+            });
+
+            return games;
+        }
+
+//        return dbConn.getJdbi()
+//                .withHandle(handle -> handle
+//                        .select("SELECT * FROM games")
+//                        .mapTo(Game.class)
+//                        .list());
     }
 
     public List<Game> getAllByNewest()
     {
-        return dbConn.getJdbi()
-                .withHandle(handle -> handle
-                        .select("SELECT * FROM games ORDER BY created_at DESC")
-                        .mapTo(Game.class)
-                        .list());
+        try (final var handle = dbConn.getJdbi().open()) {
+            final var games = handle
+                    .select("SELECT * FROM games ORDER BY created_at DESC")
+                    .mapTo(Game.class)
+                    .list();
+
+            games.forEach(game -> {
+                final var users = handle
+                        .select("SELECT * FROM users WHERE game_id = ?", game.id)
+                        .mapTo(User.class)
+                        .collect(Collectors.toSet());
+
+                game.setUsers(users);
+            });
+
+            return games;
+        }
+
+//        return dbConn.getJdbi()
+//                .withHandle(handle -> handle
+//                        .select("SELECT * FROM games ORDER BY created_at DESC")
+//                        .mapTo(Game.class)
+//                        .list());
     }
 
     public void create(Game game)

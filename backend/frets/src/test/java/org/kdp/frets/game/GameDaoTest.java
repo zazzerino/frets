@@ -9,6 +9,8 @@ import org.kdp.frets.user.UserDao;
 
 import javax.inject.Inject;
 
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
@@ -60,8 +62,8 @@ public class GameDaoTest
 
         final var game = new Game(user);
         log.info("game: " + game);
-
         gameDao.create(game);
+
         user.setGameId(game.id);
         userDao.updateGameId(user);
 
@@ -70,21 +72,23 @@ public class GameDaoTest
         assertEquals(game, foundGame);
     }
 
-//    @Test
-//    @TestTransaction
-//    public void testGetAllNewest()
-//    {
-//        assertTrue(gameDao.getAll().isEmpty());
-//
-//        final var user = new User("s0");
-//        final var game = new Game(user);
-//        gameDao.create(game);
-//
-//        assertEquals(1, gameDao.getAll().size());
-//        assertEquals(1, gameDao.getAllByNewest().size());
-//        assertEquals(Set.of(gameDao.getAll()), Set.of(gameDao.getAllByNewest()));
-//    }
-//
+    @Test
+    @TestTransaction
+    public void testGetAllNewest()
+    {
+        assertTrue(gameDao.getAll().isEmpty());
+
+        final var user = new User("s0");
+        final var game = new Game(user);
+        gameDao.create(game);
+        user.setGameId(game.id);
+        userDao.updateGameId(user);
+
+        assertEquals(1, gameDao.getAll().size());
+        assertEquals(1, gameDao.getAllByNewest().size());
+        assertEquals(Set.of(gameDao.getAll()), Set.of(gameDao.getAllByNewest()));
+    }
+
 //    @Test
 //    @TestTransaction
 //    public void testAddAndRemovePlayerId()
