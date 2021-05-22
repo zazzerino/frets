@@ -21,10 +21,10 @@ public class GameMapper implements RowMapper<Game>
 
             final var game = new Game(id, createdAt, hostId, state);
 
-            if (rs.getObject("player_ids") != null) {
-                final var playerIds = (Long[]) rs.getArray("player_ids").getArray();
-                game.setPlayerIds(new HashSet<>(Arrays.asList(playerIds)));
-            }
+//            if (rs.getObject("player_ids") != null) {
+//                final var playerIds = (Long[]) rs.getArray("player_ids").getArray();
+//                game.setPlayerIds(new HashSet<>(Arrays.asList(playerIds)));
+//            }
 
             return game;
     }

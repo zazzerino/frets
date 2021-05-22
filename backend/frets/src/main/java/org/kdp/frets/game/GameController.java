@@ -87,7 +87,7 @@ public class GameController
                 final var user = userDao.getBySessionId(sessionId).orElseThrow();
                 removeUserFromCurrentGame(user);
 
-                final var game = new Game(user.id);
+                final var game = new Game(user);
                 log.info("creating game: " + game);
                 gameDao.create(game);
 
@@ -109,7 +109,7 @@ public class GameController
                 if (user.getGameId() != null) {
                     final var game = gameDao.getById(user.getGameId()).orElseThrow();
 
-                    game.removePlayerId(user.id);
+                    game.removeUser(user);
                     gameDao.updatePlayerIdsAndState(game);
 
                     notifyPlayers(game.id, new GameUpdatedResponse(game));
@@ -129,7 +129,7 @@ public class GameController
                 removeUserFromCurrentGame(user);
 
                 final var game = gameDao.getById(gameId).orElseThrow();
-                game.addPlayerId(userId);
+                game.addUser(user);
                 gameDao.updatePlayerIdsAndState(game);
 
                 user.setGameId(game.id);

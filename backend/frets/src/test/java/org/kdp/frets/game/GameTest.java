@@ -10,11 +10,11 @@ public class GameTest
     public void testRemovePlayerId()
     {
         final var user = new User("session0");
-        final var game = new Game(user.id);
+        final var game = new Game(user);
 
-        Assertions.assertEquals(1, game.getPlayerIds().size());
-        game.removePlayerId(user.id);
-        Assertions.assertTrue(game.getPlayerIds().isEmpty());
+        Assertions.assertEquals(1, game.getUsers().size());
+        game.removeUser(user);
+        Assertions.assertTrue(game.getUsers().isEmpty());
         Assertions.assertEquals(Game.State.GAME_OVER, game.getState());
     }
 }

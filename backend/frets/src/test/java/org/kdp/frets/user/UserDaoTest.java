@@ -14,6 +14,9 @@ public class UserDaoTest
     @Inject
     UserDao userDao;
 
+//    @Inject
+//    GameDao gameDao;
+
     @Test
     @TestTransaction
     public void testCreateAndFindUser()
@@ -65,23 +68,23 @@ public class UserDaoTest
         assertEquals(name, foundUser.getName());
     }
 
-    @Test
-    @TestTransaction
-    public void testUpdateGameId()
-    {
-        final var gameId = 42L;
-
-        var user = new User("session0");
-        user.setGameId(gameId);
-        userDao.create(user);
-
-        user = userDao.getById(user.id).orElseThrow();
-        assertEquals(gameId, user.getGameId());
-
-        user.setGameId(null);
-        userDao.updateGameId(user);
-
-        user = userDao.getById(user.id).orElseThrow();
-        assertNull(user.getGameId());
-    }
+//    @Test
+//    @TestTransaction
+//    public void testUpdateGameId()
+//    {
+//        final var gameId = 42L;
+//
+//        var user = new User("session0");
+//        user.setGameId(gameId);
+//        userDao.create(user);
+//
+//        user = userDao.getById(user.id).orElseThrow();
+//        assertEquals(gameId, user.getGameId());
+//
+//        user.setGameId(null);
+//        userDao.updateGameId(user);
+//
+//        user = userDao.getById(user.id).orElseThrow();
+//        assertNull(user.getGameId());
+//    }
 }

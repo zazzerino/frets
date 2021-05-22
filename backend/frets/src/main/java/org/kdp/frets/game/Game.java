@@ -1,5 +1,7 @@
 package org.kdp.frets.game;
 
+import org.kdp.frets.user.User;
+
 import java.sql.Time;
 import java.time.Instant;
 import java.util.HashSet;
@@ -11,10 +13,9 @@ public class Game
 {
     public final Long id;
     public final Instant createdAt;
-    public final Long hostId;
-
+    public Long hostId;
     private State state = State.INIT;
-    private Set<Long> playerIds = new HashSet<>();
+    private Set<User> users = new HashSet<>();
 
     private final static AtomicLong nextId = new AtomicLong(0);
 
@@ -26,12 +27,13 @@ public class Game
         GAME_OVER
     }
 
-    public Game(Long hostId)
+    public Game(User user)
     {
         id = nextId.getAndIncrement();
         createdAt = Instant.now();
-        this.hostId = hostId;
-        addPlayerId(hostId);
+
+        hostId = user.id;
+        addUser(user);
     }
 
     public Game(Long id, Instant createdAt, Long hostId, State state)
@@ -52,28 +54,33 @@ public class Game
         this.state = state;
     }
 
-    public void addPlayerId(Long playerId)
+    public void setHostId(Long hostId)
     {
-        playerIds.add(playerId);
+        this.hostId = hostId;
     }
 
-    public void removePlayerId(Long playerId)
+    public void addUser(User user)
     {
-        playerIds.remove(playerId);
+        users.add(user);
+    }
 
-        if (playerIds.isEmpty()) {
+    public void removeUser(User user)
+    {
+        users.remove(user);
+
+        if (users.isEmpty()) {
             setState(State.GAME_OVER);
         }
     }
 
-    public Set<Long> getPlayerIds()
+    public Set<User> getUsers()
     {
-        return playerIds;
+        return users;
     }
 
-    public void setPlayerIds(Set<Long> playerIds)
+    public void setUsers(Set<User> users)
     {
-        this.playerIds = playerIds;
+        this.users = users;
     }
 
     public Long getHostId()
@@ -92,13 +99,13 @@ public class Game
                 && new Time(createdAt.toEpochMilli()).equals(new Time(game.createdAt.toEpochMilli()))
                 && hostId.equals(game.hostId)
                 && state == game.state
-                && playerIds.equals(game.playerIds);
+                && users.equals(game.users);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(id, createdAt, hostId, state, playerIds);
+        return Objects.hash(id, createdAt, hostId, state, users);
     }
 
     @Override
@@ -108,7 +115,7 @@ public class Game
                 "id=" + id +
                 ", createdAt=" + createdAt +
                 ", state=" + state +
-                ", playerIds=" + playerIds +
+                ", users=" + users +
                 '}';
     }
 }

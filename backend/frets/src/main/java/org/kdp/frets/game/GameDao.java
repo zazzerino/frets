@@ -56,19 +56,17 @@ public class GameDao
         try {
             dbConn.getJdbi().useHandle(handle -> {
                 final var update = handle.createUpdate("""
-                        INSERT INTO games (id, created_at, host_id, state, player_ids)
-                        VALUES (:id, :created_at, :host_id, :state, :player_ids)""")
+                        INSERT INTO games (id, created_at, state, host_id)
+                        VALUES (:id, :created_at, :state, :host_id)""")
                         .bind("id", game.id)
                         .bind("created_at", game.createdAt)
-                        .bind("host_id", game.hostId)
                         .bind("state", game.getState())
-                        .bindArray("player_ids", Long.class, game.getPlayerIds().toArray())
+                        .bind("host_id", game.hostId)
                         .execute();
             });
         } catch (Exception e) {
             log.error(e.getStackTrace());
         }
-
     }
 
     public void delete(Game game)
@@ -80,20 +78,20 @@ public class GameDao
 
     public void updatePlayerIdsAndState(Game game)
     {
-        try {
-            dbConn.getJdbi().useHandle(handle -> {
-                handle.createUpdate("""
-                        UPDATE games
-                        SET player_ids = :player_ids, state = :state
-                        WHERE id = :id""")
-                        .bind("id", game.id)
-                        .bind("state", game.getState())
-                        .bindArray("player_ids", Long.class, game.getPlayerIds().toArray())
-                        .execute();
-            });
-        } catch (Exception e) {
-            log.error(e.getStackTrace());
-        }
+//        try {
+//            dbConn.getJdbi().useHandle(handle -> {
+//                handle.createUpdate("""
+//                        UPDATE games
+//                        SET player_ids = :player_ids, state = :state
+//                        WHERE id = :id""")
+//                        .bind("id", game.id)
+//                        .bind("state", game.getState())
+//                        .bindArray("player_ids", User.class, game.getUsers().toArray())
+//                        .execute();
+//            });
+//        } catch (Exception e) {
+//            log.error(e.getStackTrace());
+//        }
     }
 
     public List<String> getSessionIds(Game game)
