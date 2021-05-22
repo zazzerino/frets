@@ -27,28 +27,40 @@ public class UserController
     public void loginAnonymousUser(String sessionId)
     {
         executor.submit(() -> {
-            final var user = new User(sessionId);
-            log.info("saving user: " + user);
-            userDao.create(user);
-            webSocket.sendToSessionId(sessionId, new LoginResponse(user));
+            try {
+                final var user = new User(sessionId);
+                log.info("saving user: " + user);
+                userDao.create(user);
+                webSocket.sendToSessionId(sessionId, new LoginResponse(user));
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
         });
     }
 
     public void login(String sessionId, LoginMessage message)
     {
         executor.submit(() -> {
-            final var user = userDao.getBySessionId(sessionId).orElseThrow();
-            user.setName(message.name);
-            userDao.updateName(user);
-            log.info("user logged in: " + user);
-            webSocket.sendToSessionId(sessionId, new LoginResponse(user));
+            try {
+                final var user = userDao.getBySessionId(sessionId).orElseThrow();
+                user.setName(message.name);
+                userDao.updateName(user);
+                log.info("user logged in: " + user);
+                webSocket.sendToSessionId(sessionId, new LoginResponse(user));
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
         });
     }
 
     public void sessionClosed(User user)
     {
         executor.submit(() -> {
-            userDao.delete(user);
+            try {
+                userDao.delete(user);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
         });
     }
 }

@@ -35,9 +35,13 @@ public class GameController
     public void broadcastGames()
     {
         executor.submit(() -> {
-            log.info("broadcasting games...");
-            final var games = gameDao.getAllByNewest();
-            webSocket.broadcast(new GamesResponse(games));
+            try {
+                log.info("broadcasting games...");
+                final var games = gameDao.getAllByNewest();
+                webSocket.broadcast(new GamesResponse(games));
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
         });
     }
 
@@ -47,9 +51,13 @@ public class GameController
     public void sendGamesToSessionId(String sessionId)
     {
         executor.submit(() -> {
-            log.info("sending games to session: " + sessionId);
-            final var games = gameDao.getAllByNewest();
-            webSocket.sendToSessionId(sessionId, new GamesResponse(games));
+            try {
+                log.info("sending games to session: " + sessionId);
+                final var games = gameDao.getAllByNewest();
+                webSocket.sendToSessionId(sessionId, new GamesResponse(games));
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
         });
     }
 
@@ -59,9 +67,13 @@ public class GameController
     public void notifyPlayers(Long gameId, Response response)
     {
         executor.submit(() -> {
-            final var game = gameDao.getById(gameId).orElseThrow();
-            final var sessionIds = gameDao.getSessionIds(game);
-            webSocket.sendToSessionIds(sessionIds, response);
+            try {
+                final var game = gameDao.getById(gameId).orElseThrow();
+                final var sessionIds = gameDao.getSessionIds(game);
+                webSocket.sendToSessionIds(sessionIds, response);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
         });
     }
 
@@ -71,32 +83,40 @@ public class GameController
     public void createGame(String sessionId)
     {
         executor.submit(() -> {
-            final var user = userDao.getBySessionId(sessionId).orElseThrow();
-            removeUserFromCurrentGame(user);
+            try {
+                final var user = userDao.getBySessionId(sessionId).orElseThrow();
+                removeUserFromCurrentGame(user);
 
-            final var game = new Game(user.id);
-            log.info("creating game: " + game);
-            gameDao.create(game);
+                final var game = new Game(user.id);
+                log.info("creating game: " + game);
+                gameDao.create(game);
 
-            user.setGameId(game.id);
-            userDao.updateGameId(user);
+                user.setGameId(game.id);
+                userDao.updateGameId(user);
 
-            webSocket.sendToSessionId(sessionId, new JoinGameResponse(game));
-            broadcastGames();
+                webSocket.sendToSessionId(sessionId, new JoinGameResponse(game));
+                broadcastGames();
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
         });
     }
 
     public void removeUserFromCurrentGame(User user)
     {
         executor.submit(() -> {
-            if (user.getGameId() != null) {
-                final var game = gameDao.getById(user.getGameId()).orElseThrow();
+            try {
+                if (user.getGameId() != null) {
+                    final var game = gameDao.getById(user.getGameId()).orElseThrow();
 
-                game.removePlayerId(user.id);
-                gameDao.updatePlayerIdsAndState(game);
+                    game.removePlayerId(user.id);
+                    gameDao.updatePlayerIdsAndState(game);
 
-                notifyPlayers(game.id, new GameUpdatedResponse(game));
-                broadcastGames();
+                    notifyPlayers(game.id, new GameUpdatedResponse(game));
+                    broadcastGames();
+                }
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
             }
         });
     }
@@ -104,18 +124,22 @@ public class GameController
     public void addUserToGame(Long gameId, Long userId)
     {
         executor.submit(() -> {
-            final var user = userDao.getById(userId).orElseThrow();
-            removeUserFromCurrentGame(user);
+            try {
+                final var user = userDao.getById(userId).orElseThrow();
+                removeUserFromCurrentGame(user);
 
-            final var game = gameDao.getById(gameId).orElseThrow();
-            game.addPlayerId(userId);
-            gameDao.updatePlayerIdsAndState(game);
+                final var game = gameDao.getById(gameId).orElseThrow();
+                game.addPlayerId(userId);
+                gameDao.updatePlayerIdsAndState(game);
 
-            user.setGameId(game.id);
-            userDao.updateGameId(user);
+                user.setGameId(game.id);
+                userDao.updateGameId(user);
 
-            notifyPlayers(gameId, new JoinGameResponse(game));
-            broadcastGames();
+                notifyPlayers(gameId, new JoinGameResponse(game));
+                broadcastGames();
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
         });
     }
 
