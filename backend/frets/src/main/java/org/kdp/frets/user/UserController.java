@@ -43,8 +43,10 @@ public class UserController
         executor.submit(() -> {
             try {
                 final var user = userDao.getBySessionId(sessionId).orElseThrow();
+
                 user.setName(message.name);
-                userDao.updateName(user);
+                userDao.update(user);
+
                 log.info("user logged in: " + user);
                 webSocket.sendToSessionId(sessionId, new LoginResponse(user));
             } catch (Exception e) {

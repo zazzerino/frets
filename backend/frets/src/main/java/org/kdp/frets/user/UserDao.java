@@ -53,26 +53,20 @@ public class UserDao
 
     public void delete(User user)
     {
-        dbConn.getJdbi().useHandle(handle -> {
-            handle.execute("DELETE FROM users WHERE id = ?", user.id);
-        });
+        dbConn.getJdbi().useHandle(handle -> handle
+                .execute("DELETE FROM users WHERE id = ?", user.id));
     }
 
-    public void updateName(User user)
+    public void update(User user)
     {
-        dbConn.getJdbi().useHandle(handle -> {
-            handle.execute("UPDATE users SET name = ? WHERE id = ?",
+        dbConn.getJdbi().useHandle(handle -> handle
+            .execute("""
+                    UPDATE users
+                    SET session_id = ?, name = ?, game_id = ?
+                    WHERE id = ?""",
+                    user.sessionId,
                     user.getName(),
-                    user.id);
-        });
-    }
-
-    public void updateGameId(User user)
-    {
-        dbConn.getJdbi().useHandle(handle -> {
-            handle.execute("UPDATE users SET game_id = ? WHERE id = ?",
                     user.getGameId(),
-                    user.id);
-        });
+                    user.id));
     }
 }

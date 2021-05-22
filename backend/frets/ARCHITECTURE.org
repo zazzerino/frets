@@ -1,0 +1,22 @@
+#+TITLE: Architecture
+
+* Games
+** GameDao
+*** public void create(Game g)
+*** public void update(Game g)
+*** public void delete(Game g)
+*** public Optional<Game> getById(Long i)
+*** public List<Game> getAll()
+*** public List<Game> getAllByNewest()
+*** public List<User> getUsers()
+** GameController
+*** public void createGame(Session s)
+* Users
+** UserDao
+*** public void create(User u)
+*** public void update(User u)
+*** public void delete(User u)
+*** public Optional<User> getById(Long i)
+*** public Optional<User> getBySessionId(String s)
+*** public Optional<Long> getGameId()
+** UserController

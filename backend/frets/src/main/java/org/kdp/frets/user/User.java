@@ -65,7 +65,10 @@ public class User
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id.equals(user.id) && sessionId.equals(user.sessionId) && name.equals(user.name) && Objects.equals(gameId, user.gameId);
+        return id.equals(user.id)
+                && sessionId.equals(user.sessionId)
+                && name.equals(user.name)
+                && Objects.equals(gameId, user.gameId);
     }
 
     @Override

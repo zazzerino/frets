@@ -41,12 +41,11 @@ public class UserDaoTest
         assertTrue(userDao.getAll().isEmpty());
 
         var user = new User("session0");
-        userDao.create(user);
 
+        userDao.create(user);
         assertEquals(1, userDao.getAll().size());
 
         userDao.delete(user);
-
         assertTrue(userDao.getAll().isEmpty());
     }
 
@@ -56,32 +55,14 @@ public class UserDaoTest
     {
         final var name = "Alice";
         final var user = new User("session0");
+
         userDao.create(user);
         assertEquals(User.DEFAULT_NAME, user.getName());
+
         user.setName(name);
-        userDao.updateName(user);
+        userDao.update(user);
 
         final var foundUser = userDao.getById(user.id).orElseThrow();
         assertEquals(name, foundUser.getName());
     }
-
-//    @Test
-//    @TestTransaction
-//    public void testUpdateGameId()
-//    {
-//        final var gameId = 42L;
-//
-//        var user = new User("session0");
-//        user.setGameId(gameId);
-//        userDao.create(user);
-//
-//        user = userDao.getById(user.id).orElseThrow();
-//        assertEquals(gameId, user.getGameId());
-//
-//        user.setGameId(null);
-//        userDao.updateGameId(user);
-//
-//        user = userDao.getById(user.id).orElseThrow();
-//        assertNull(user.getGameId());
-//    }
 }

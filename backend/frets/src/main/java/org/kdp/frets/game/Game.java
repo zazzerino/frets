@@ -96,7 +96,7 @@ public class Game
         if (o == null || getClass() != o.getClass()) return false;
         Game game = (Game) o;
         return id.equals(game.id)
-                // convert createdAt to Time to ignore loss of precision after saving and retrieving from postgres
+                // ignore loss of precision after saving and retrieving from postgres
                 && new Time(createdAt.toEpochMilli()).equals(new Time(game.createdAt.toEpochMilli()))
                 && hostId.equals(game.hostId)
                 && state == game.state

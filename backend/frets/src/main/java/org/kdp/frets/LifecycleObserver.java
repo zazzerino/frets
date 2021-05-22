@@ -38,7 +38,7 @@ public class LifecycleObserver
                 handle.execute(importSql);
             });
         } catch (IOException e) {
-            log.error(e.getStackTrace());
+            log.error(e.getMessage(), e);
         }
     }
 }

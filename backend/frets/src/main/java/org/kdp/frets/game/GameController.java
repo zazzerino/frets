@@ -92,7 +92,7 @@ public class GameController
                 gameDao.create(game);
 
                 user.setGameId(game.id);
-                userDao.updateGameId(user);
+                userDao.update(user);
 
                 webSocket.sendToSessionId(sessionId, new JoinGameResponse(game));
                 broadcastGames();
@@ -110,7 +110,10 @@ public class GameController
                     final var game = gameDao.getById(user.getGameId()).orElseThrow();
 
                     game.removeUser(user);
-                    gameDao.updatePlayerIdsAndState(game);
+                    gameDao.update(game);
+
+                    user.setGameId(null);
+                    userDao.update(user);
 
                     notifyPlayers(game.id, new GameUpdatedResponse(game));
                     broadcastGames();
@@ -130,10 +133,10 @@ public class GameController
 
                 final var game = gameDao.getById(gameId).orElseThrow();
                 game.addUser(user);
-                gameDao.updatePlayerIdsAndState(game);
+//                gameDao.updatePlayerIdsAndState(game);
 
                 user.setGameId(game.id);
-                userDao.updateGameId(user);
+                userDao.update(user);
 
                 notifyPlayers(gameId, new JoinGameResponse(game));
                 broadcastGames();

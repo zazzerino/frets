@@ -8,10 +8,10 @@ import org.kdp.frets.user.User;
 import org.kdp.frets.user.UserDao;
 
 import javax.inject.Inject;
-
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 public class GameDaoTest
@@ -33,6 +33,7 @@ public class GameDaoTest
 
         final var user = new User("s0");
         userDao.create(user);
+
         final var game = new Game(user);
         gameDao.create(game);
 
@@ -65,7 +66,7 @@ public class GameDaoTest
         gameDao.create(game);
 
         user.setGameId(game.id);
-        userDao.updateGameId(user);
+        userDao.update(user);
 
         final var foundGame = gameDao.getById(game.id).orElseThrow();
         log.info("found game: " + foundGame);
@@ -81,28 +82,37 @@ public class GameDaoTest
         final var user = new User("s0");
         final var game = new Game(user);
         gameDao.create(game);
+
         user.setGameId(game.id);
-        userDao.updateGameId(user);
+        userDao.update(user);
 
         assertEquals(1, gameDao.getAll().size());
         assertEquals(1, gameDao.getAllByNewest().size());
         assertEquals(Set.of(gameDao.getAll()), Set.of(gameDao.getAllByNewest()));
     }
 
-//    @Test
-//    @TestTransaction
-//    public void testAddAndRemovePlayerId()
-//    {
-//        final var user0 = new User("s0");
+    @Test
+    @TestTransaction
+    public void testAddAndRemovePlayerId()
+    {
+        final var user0 = new User("s0");
 //        final var user1 = new User("s1");
-//
-//        final var game = new Game(user0);
-//        gameDao.create(game);
-//
+
+        final var game = new Game(user0);
+        gameDao.create(game);
+        log.info("game: " + game);
+
+        user0.setGameId(game.id);
+        userDao.update(user0);
+        log.info("user: " + user0);
+
+        final var found = gameDao.getById(game.id).orElseThrow();
+        log.info("found: " + found);
+
 //        assertEquals(
 //                1,
 //                gameDao.getById(game.id).orElseThrow().getUsers().size());
-//
+
 //        game.addUser(user1);
 //        gameDao.updatePlayerIdsAndState(game);
 //
@@ -131,5 +141,5 @@ public class GameDaoTest
 //                gameDao.getById(game.id)
 //                        .orElseThrow()
 //                        .getState());
-//    }
+    }
 }

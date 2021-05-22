@@ -3,9 +3,11 @@ package org.kdp.frets.game;
 import org.jboss.logging.Logger;
 import org.kdp.frets.DatabaseConnection;
 import org.kdp.frets.user.User;
+import org.kdp.frets.user.UserDao;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,6 +20,9 @@ public class GameDao
 
     @Inject
     DatabaseConnection dbConn;
+
+    @Inject
+    UserDao userDao;
 
     public Optional<Game> getById(Long gameId)
     {
@@ -78,66 +83,63 @@ public class GameDao
 
             return games;
         }
-
-//        return dbConn.getJdbi()
-//                .withHandle(handle -> handle
-//                        .select("SELECT * FROM games ORDER BY created_at DESC")
-//                        .mapTo(Game.class)
-//                        .list());
     }
 
     public void create(Game game)
     {
-        try {
-            dbConn.getJdbi().useHandle(handle -> {
-                final var update = handle.createUpdate("""
+        try (final var handle = dbConn.getJdbi().open()) {
+            handle.execute("""
                         INSERT INTO games (id, created_at, state, host_id)
-                        VALUES (:id, :created_at, :state, :host_id)""")
-                        .bind("id", game.id)
-                        .bind("created_at", game.createdAt)
-                        .bind("state", game.getState())
-                        .bind("host_id", game.getHostId())
-                        .execute();
-            });
+                        VALUES (?, ?, ?, ?)""",
+                    game.id,
+                    game.createdAt,
+                    game.getState(),
+                    game.getHostId());
+
+            for (final var user : game.getUsers()) {
+                user.setGameId(game.id);
+                userDao.update(user);
+            }
         } catch (Exception e) {
-            log.error(e.getStackTrace());
+            log.error(e.getMessage(), e);
         }
+    }
+
+    public void update(Game game) {
+        dbConn.getJdbi().useHandle(handle -> handle
+                .execute("""
+                        UPDATE games
+                        SET created_at = ?,  state = ?, host_id = ?
+                        WHERE id = ?""",
+                        game.createdAt,
+                        game.getState(),
+                        game.getHostId(),
+                        game.id));
     }
 
     public void delete(Game game)
     {
-        dbConn.getJdbi().useHandle(handle -> {
-            handle.execute("DELETE FROM games WHERE id = ?", game.id);
-        });
-    }
-
-    public void updatePlayerIdsAndState(Game game)
-    {
-//        try {
-//            dbConn.getJdbi().useHandle(handle -> {
-//                handle.createUpdate("""
-//                        UPDATE games
-//                        SET player_ids = :player_ids, state = :state
-//                        WHERE id = :id""")
-//                        .bind("id", game.id)
-//                        .bind("state", game.getState())
-//                        .bindArray("player_ids", User.class, game.getUsers().toArray())
-//                        .execute();
-//            });
-//        } catch (Exception e) {
-//            log.error(e.getStackTrace());
-//        }
+        try {
+            dbConn.getJdbi().useHandle(handle -> handle
+                    .execute("DELETE FROM games WHERE id = ?", game.id));
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
     public List<String> getSessionIds(Game game)
     {
-//        return dbConn.getJdbi()
-//                .withHandle(handle -> handle
-//                        .select("SELECT session_id FROM users WHERE id in (<player_ids>)")
-//                        .bindList("player_ids", game.getPlayerIds())
-//                        .mapTo(String.class)
-//                        .list());
-        return List.of();
+        try {
+            return dbConn.getJdbi()
+                    .withHandle(handle -> handle
+                            .select("SELECT session_id FROM users WHERE game_id = :id")
+                            .bind("id", game.id)
+                            .mapTo(String.class)
+                            .list());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return null;
     }
 
 //    public List<User> getPlayers(Game game)
@@ -150,13 +152,13 @@ public class GameDao
 //                        .list());
 //    }
 
-    public List<Game> getUserGames(Long userId)
-    {
-        return dbConn.getJdbi()
-                .withHandle(handle -> handle
-                        .select("SELECT * FROM games WHERE :user_id = ANY(player_ids)")
-                        .bind("user_id", userId)
-                        .mapTo(Game.class)
-                        .list());
-    }
+//    public List<Game> getUserGames(Long userId)
+//    {
+//        return dbConn.getJdbi()
+//                .withHandle(handle -> handle
+//                        .select("SELECT * FROM games WHERE :user_id = ANY(player_ids)")
+//                        .bind("user_id", userId)
+//                        .mapTo(Game.class)
+//                        .list());
+//    }
 }
