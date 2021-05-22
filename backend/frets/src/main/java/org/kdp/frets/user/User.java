@@ -1,11 +1,15 @@
 package org.kdp.frets.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class User
 {
     public final Long id;
+
+    @JsonIgnore
     public final String sessionId;
 
     private String name = DEFAULT_NAME;

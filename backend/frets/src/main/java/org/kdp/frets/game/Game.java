@@ -13,7 +13,8 @@ public class Game
 {
     public final Long id;
     public final Instant createdAt;
-    public Long hostId;
+
+    private Long hostId;
     private State state = State.INIT;
     private Set<User> users = new HashSet<>();
 
@@ -54,6 +55,11 @@ public class Game
         this.state = state;
     }
 
+    public Long getHostId()
+    {
+        return hostId;
+    }
+
     public void setHostId(Long hostId)
     {
         this.hostId = hostId;
@@ -81,11 +87,6 @@ public class Game
     public void setUsers(Set<User> users)
     {
         this.users = users;
-    }
-
-    public Long getHostId()
-    {
-        return hostId;
     }
 
     @Override

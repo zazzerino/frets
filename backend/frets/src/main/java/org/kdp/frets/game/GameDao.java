@@ -38,9 +38,6 @@ public class GameDao
         }
     }
 
-//    select users.session_id from games join users on games.id = users.game_id where users.id = 2;
-//    select users.id, name, session_id, game_id from users join games on games.id = users.game_id where users.id = 0;
-
     public List<Game> getAll()
     {
         try (final var handle = dbConn.getJdbi().open()) {
@@ -60,12 +57,6 @@ public class GameDao
 
             return games;
         }
-
-//        return dbConn.getJdbi()
-//                .withHandle(handle -> handle
-//                        .select("SELECT * FROM games")
-//                        .mapTo(Game.class)
-//                        .list());
     }
 
     public List<Game> getAllByNewest()
@@ -105,7 +96,7 @@ public class GameDao
                         .bind("id", game.id)
                         .bind("created_at", game.createdAt)
                         .bind("state", game.getState())
-                        .bind("host_id", game.hostId)
+                        .bind("host_id", game.getHostId())
                         .execute();
             });
         } catch (Exception e) {
